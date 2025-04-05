@@ -2,26 +2,17 @@ from typing import Union
 import asyncio
 import json
 import requests
-import asyncio
 from crawl4ai import AsyncWebCrawler  # type: ignore
-from pydantic import BaseModel, ValidationError
-from typing import List, Optional
+from pydantic import ValidationError
+from typing import List
 from datetime import datetime, timedelta
 from agents import Agent, Runner, function_tool
 from utils.reddit_fetch import fetch_reddit_top_posts
 from dotenv import load_dotenv
+from app_types.post import Post, SourceEnum
+
 
 load_dotenv()
-
-
-class Post(BaseModel):
-    id: Optional[int]  # Add the Hacker News post ID
-    title: Optional[str]
-    author: Optional[str]
-    upvotes: Optional[int]
-    url: Optional[str]
-    published_date: Optional[str]
-    comment_url: Optional[str]  # Add the Hacker News comment URL
 
 
 async def crawl_page(url: str):
@@ -30,8 +21,6 @@ async def crawl_page(url: str):
             url=url,
         )
         print(result.markdown)
-
-
 
 
 @function_tool
@@ -90,15 +79,21 @@ def fetch_hackernews_top_posts(limit: int) -> List[Union[Post, dict]]:
             published_date = datetime.fromtimestamp(story_data.get("time", 0))
             if published_date >= one_week_ago:
                 title = story_data.get("title", "").lower()
-                if any(keyword in title for keyword in keywords) and story_data.get("score") > 20:
+                if (
+                    any(keyword in title for keyword in keywords)
+                    and story_data.get("score") > 20
+                ):
                     try:
                         post = Post(
+                            source=SourceEnum.hnews,
                             id=story_id,  # Include the Hacker News post ID
                             title=story_data.get("title"),
                             author=story_data.get("by"),
                             upvotes=story_data.get("score"),
                             url=story_data.get("url"),
-                            published_date=datetime.fromtimestamp(int(story_data.get("time"))).strftime("%Y-%m-%d %H:%M:%S"),
+                            published_date=datetime.fromtimestamp(
+                                int(story_data.get("time"))
+                            ).strftime("%Y-%m-%d %H:%M:%S"),
                             comment_url=f"https://news.ycombinator.com/item?id={story_id}",  # Generate comment URL
                         )
                         posts.append(post)
