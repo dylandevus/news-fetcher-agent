@@ -3,6 +3,15 @@ import os
 import subprocess
 import sys
 
+commands = [
+    "uv venv --python 3.13",
+    "uv init",
+    "uv venv",
+    "uv add ruff dotenv pyright",
+    "uv run ruff format",
+    "uv run ruff check",
+]
+
 
 def ensure_git_user_config():
     """Ensures the [user] section exists in .git/config."""
@@ -36,6 +45,11 @@ def create_pre_commit_config():
     - id: ruff
     # Run the formatter.
     - id: ruff-format
+
+- repo: https://github.com/RobertCraigie/pyright-python
+  rev: v1.1.398
+  hooks:
+  - id: pyright
 """
     try:
         with open(".pre-commit-config.yaml", "w") as file:
@@ -44,15 +58,6 @@ def create_pre_commit_config():
     except Exception as e:
         print(f"ERROR: Failed to create .pre-commit-config.yaml: {e}", file=sys.stderr)
 
-
-commands = [
-    "uv venv --python 3.13",
-    "uv init",
-    "uv venv",
-    "uv add ruff",
-    "uv run ruff format",
-    "uv run ruff check",
-]
 
 for cmd in commands:
     print(f"--- Running: {cmd}")
