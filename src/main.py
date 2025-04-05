@@ -1,4 +1,5 @@
 import asyncio
+import json
 import requests
 
 from pydantic import BaseModel, ValidationError
@@ -17,6 +18,7 @@ class Post(BaseModel):
     upvotes: Optional[int]
     url: Optional[str]
     published_date: Optional[int]
+    comment_url: Optional[str]  # Add the Hacker News comment URL
 
 
 @function_tool
@@ -52,6 +54,9 @@ def fetch_hackernews_top_posts(limit: int) -> List[Post]:
         "python",
         "javascript",
         "typescript",
+        "css",
+        "server",
+        "browser"
     ]
 
     try:
@@ -81,13 +86,17 @@ def fetch_hackernews_top_posts(limit: int) -> List[Post]:
                             upvotes=story_data.get("score"),
                             url=story_data.get("url"),
                             published_date=story_data.get("time"),
+                            comment_url=f"https://news.ycombinator.com/item?id={story_id}"  # Generate comment URL
                         )
                         posts.append(post)
                     except ValidationError as e:
                         posts.append({"error": str(e)})
-
         return posts
     except requests.RequestException as e:
+        print(e)
+        return [{"error": str(e)}]
+    except Exception as e:
+        print(e)
         return [{"error": str(e)}]
 
 
@@ -95,6 +104,7 @@ agent = Agent(
     name="Hacker News Fetcher",
     instructions="You are an agent that fetches top Hacker News posts.",
     tools=[fetch_hackernews_top_posts],
+    output_type=List[Post]
 )
 
 
@@ -103,7 +113,9 @@ async def main():
         agent,
         input="Fetch the top 10 Hacker News posts. Also show link, link to comments, published date, author, upvotes.",
     )
-    print(result.final_output)
+    # Convert the output to JSON and print it
+    json_output = json.dumps([post.model_dump() for post in result.final_output], indent=4)
+    print(json_output)
 
 
 if __name__ == "__main__":
