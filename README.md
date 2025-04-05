@@ -24,6 +24,8 @@ $ uv run ruff check
 $ uv run pyright
 ```
 
+To debug - use: enable_verbose_stdout_logging()
+
 Output sample:
 
 ```

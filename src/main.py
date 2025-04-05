@@ -1,18 +1,16 @@
-from typing import Union
 import asyncio
 import json
-import requests
 from crawl4ai import AsyncWebCrawler  # type: ignore
-from pydantic import ValidationError
 from typing import List
-from datetime import datetime, timedelta
-from agents import Agent, Runner, function_tool
+from agents import Agent, Runner
 from utils.reddit_fetch import fetch_reddit_top_posts
+from utils.hnews_fetch import fetch_hackernews_top_posts
 from dotenv import load_dotenv
-from app_types.post import Post, SourceEnum
+from app_types.post import Post
 
 
 load_dotenv()
+# enable_verbose_stdout_logging() # from agents import enable_verbose_stdout_logging
 
 
 async def crawl_page(url: str):
@@ -21,91 +19,6 @@ async def crawl_page(url: str):
             url=url,
         )
         print(result.markdown)
-
-
-@function_tool
-def fetch_hackernews_top_posts(limit: int) -> List[Union[Post, dict]]:
-    """
-    Fetches the top Hacker News posts of the week and their metadata, filtering for programming or AI-related posts.
-
-    Args:
-        limit (int): Number of top posts to fetch.
-
-    Returns:
-        List[Post]: A list of validated Post objects.
-    """
-    if limit is None:
-        limit = 10
-
-    top_stories_url = "https://hacker-news.firebaseio.com/v0/topstories.json"
-    item_url = "https://hacker-news.firebaseio.com/v0/item/{}.json"
-    one_week_ago = datetime.now() - timedelta(days=7)
-    keywords = [
-        "program",
-        "ML",
-        "AI",
-        "machine learning",
-        "artificial intelligence",
-        "agent",
-        "coding",
-        "developer",
-        "development",
-        "source",
-        "code",
-        "Open-source",
-        "python",
-        "javascript",
-        "typescript",
-        "css",
-        "server",
-        "browser",
-    ]
-
-    try:
-        response = requests.get(top_stories_url)
-        response.raise_for_status()
-        top_story_ids = response.json()
-
-        posts: List[Union[Post, dict]] = []
-        for story_id in top_story_ids:
-            if len(posts) >= limit:
-                break
-
-            story_response = requests.get(item_url.format(story_id))
-            story_response.raise_for_status()
-            story_data = story_response.json()
-
-            # Filter posts published within the last 7 days
-            published_date = datetime.fromtimestamp(story_data.get("time", 0))
-            if published_date >= one_week_ago:
-                title = story_data.get("title", "").lower()
-                if (
-                    any(keyword in title for keyword in keywords)
-                    and story_data.get("score") > 20
-                ):
-                    try:
-                        post = Post(
-                            source=SourceEnum.hnews,
-                            id=story_id,  # Include the Hacker News post ID
-                            title=story_data.get("title"),
-                            author=story_data.get("by"),
-                            upvotes=story_data.get("score"),
-                            url=story_data.get("url"),
-                            published_date=datetime.fromtimestamp(
-                                int(story_data.get("time"))
-                            ).strftime("%Y-%m-%d %H:%M:%S"),
-                            comment_url=f"https://news.ycombinator.com/item?id={story_id}",  # Generate comment URL
-                        )
-                        posts.append(post)
-                    except ValidationError as e:
-                        posts.append({"error": str(e)})
-        return posts
-    except requests.RequestException as e:
-        print(e)
-        return [{"error": str(e)}]
-    except Exception as e:
-        print(e)
-        return [{"error": str(e)}]
 
 
 agent = Agent(
@@ -121,7 +34,7 @@ async def main():
 
     result = await Runner.run(
         agent,
-        input="Fetch the top 10 Reddit Python posts. Also show link, link to comments, published date, author, upvotes.",
+        input="Fetch the top 10 Hacker News posts. Also show link, link to comments, published date, author, upvotes.",
     )
     # Convert the output to JSON and print it
     json_output = json.dumps(
