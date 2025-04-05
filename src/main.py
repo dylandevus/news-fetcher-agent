@@ -1,7 +1,9 @@
+from typing import Union
 import asyncio
 import json
 import requests
-
+import asyncio
+from crawl4ai import AsyncWebCrawler  # type: ignore
 from pydantic import BaseModel, ValidationError
 from typing import List, Optional
 from datetime import datetime, timedelta
@@ -21,8 +23,16 @@ class Post(BaseModel):
     comment_url: Optional[str]  # Add the Hacker News comment URL
 
 
+async def crawl_page(url: str):
+    async with AsyncWebCrawler() as crawler:
+        result = await crawler.arun(
+            url=url,
+        )
+        print(result.markdown)
+
+
 @function_tool
-def fetch_hackernews_top_posts(limit: int) -> List[Post]:
+def fetch_hackernews_top_posts(limit: int) -> List[Union[Post, dict]]:
     """
     Fetches the top Hacker News posts of the week and their metadata, filtering for programming or AI-related posts.
 
@@ -56,7 +66,7 @@ def fetch_hackernews_top_posts(limit: int) -> List[Post]:
         "typescript",
         "css",
         "server",
-        "browser"
+        "browser",
     ]
 
     try:
@@ -64,7 +74,7 @@ def fetch_hackernews_top_posts(limit: int) -> List[Post]:
         response.raise_for_status()
         top_story_ids = response.json()
 
-        posts = []
+        posts: List[Union[Post, dict]] = []
         for story_id in top_story_ids:
             if len(posts) >= limit:
                 break
@@ -86,7 +96,7 @@ def fetch_hackernews_top_posts(limit: int) -> List[Post]:
                             upvotes=story_data.get("score"),
                             url=story_data.get("url"),
                             published_date=story_data.get("time"),
-                            comment_url=f"https://news.ycombinator.com/item?id={story_id}"  # Generate comment URL
+                            comment_url=f"https://news.ycombinator.com/item?id={story_id}",  # Generate comment URL
                         )
                         posts.append(post)
                     except ValidationError as e:
@@ -104,18 +114,22 @@ agent = Agent(
     name="Hacker News Fetcher",
     instructions="You are an agent that fetches top Hacker News posts.",
     tools=[fetch_hackernews_top_posts],
-    output_type=List[Post]
+    output_type=List[Post],
 )
 
 
 async def main():
-    result = await Runner.run(
-        agent,
-        input="Fetch the top 10 Hacker News posts. Also show link, link to comments, published date, author, upvotes.",
-    )
-    # Convert the output to JSON and print it
-    json_output = json.dumps([post.model_dump() for post in result.final_output], indent=4)
-    print(json_output)
+    await crawl_page("https://www.nbcnews.com/business")
+
+    # result = await Runner.run(
+    #     agent,
+    #     input="Fetch the top 10 Hacker News posts. Also show link, link to comments, published date, author, upvotes.",
+    # )
+    # # Convert the output to JSON and print it
+    # json_output = json.dumps(
+    #     [post.model_dump() for post in result.final_output], indent=4
+    # )
+    # print(json_output)
 
 
 if __name__ == "__main__":

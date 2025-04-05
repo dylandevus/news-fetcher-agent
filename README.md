@@ -1,6 +1,10 @@
 # news-fetcher-agent
 
-News Fetcher Agent using OpenAI Agents SDK and Responses API
+News Fetcher Agent using:
+
+*   OpenAI Agents SDK
+*   Structured ouput (pydantic)
+*   Crawl4ai
 
 ### DEVELOPMENT
 
