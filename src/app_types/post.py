@@ -14,7 +14,7 @@ class SubEnum(str, Enum):
 
 class Post(BaseModel):
     source: Optional[SourceEnum]
-    sub: Optional[SubEnum]
+    sub: Optional[str]
     id: Optional[str]  # Add the Hacker News post ID
     title: Optional[str]
     text: Optional[str]  # HNews text

@@ -11,6 +11,7 @@ dependencies = [
     "openai-agents>=0.0.8",
     "pyright>=1.1.398",
     "ruff>=0.11.4",
+    "types-pyyaml>=6.0.12.20250402",
     "types-requests>=2.32.0.20250328",
 ]
 

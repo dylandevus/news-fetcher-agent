@@ -70,7 +70,7 @@ def fetch_hackernews_top_posts(limit: int) -> List[Union[Post, dict]]:
                     try:
                         post = Post(
                             source=SourceEnum.hnews,
-                            sub="",
+                            sub=None,
                             id=str(story_id),  # Include the Hacker News post ID
                             title=story_data.get("title"),
                             text=story_data.get("text"),
