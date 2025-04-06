@@ -2,7 +2,7 @@ import asyncio
 import json
 from crawl4ai import AsyncWebCrawler  # type: ignore
 from typing import List
-from agents import Agent, Runner
+from agents import Agent, Runner, enable_verbose_stdout_logging
 from utils.reddit_fetch import fetch_reddit_top_posts
 from utils.hnews_fetch import fetch_hackernews_top_posts
 from dotenv import load_dotenv
@@ -10,7 +10,10 @@ from app_types.post import Post
 
 
 load_dotenv()
-# enable_verbose_stdout_logging() # from agents import enable_verbose_stdout_logging
+
+VERBOSE = False
+if VERBOSE:
+    enable_verbose_stdout_logging()  # from agents import enable_verbose_stdout_logging
 
 
 async def crawl_page(url: str):

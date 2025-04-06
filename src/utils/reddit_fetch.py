@@ -19,15 +19,16 @@ def fetch_reddit_top_posts(limit: int, reddit_sub: str) -> List[Union[Post, dict
 
     Return Sample:
         [{
-            "source": "REDDIT-PYTHON",
-            "id": "1jo8gvx",
-            "title": "PEP 751 (a standardized lockfile for Python) is accepted!",
+            "source": "REDDIT",
+            "sub": "ArtificialInteligence",
+            "id": "1jo3o69",
+            "title": "Are LLMs just predicting the next token?",
             "text": "",
-            "author": "toxic_acro",
-            "upvotes": 1127,
-            "url": "https://www.reddit.com/r/Python/comments/1jo8gvx/pep_751_a_standardized_lockfile_for_python_is/",
-            "published_date": "2025-03-31 10:14:57",
-            "comment_url": "https://www.reddit.com/r/Python/comments/1jo8gvx/pep_751_a_standardized_lockfile_for_python_is/"
+            "author": "relegi",
+            "upvotes": 158,
+            "url": "https://www.reddit.com/r/ArtificialInteligence/comments/1jo3o69/are_llms_just_predicting_the_next_token/",
+            "published_date": "2025-03-31 06:51:20",
+            "comment_url": "https://www.reddit.com/r/ArtificialInteligence/comments/1jo3o69/are_llms_just_predicting_the_next_token/"
         }]
     """
     if limit is None:

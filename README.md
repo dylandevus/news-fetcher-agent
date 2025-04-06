@@ -20,9 +20,11 @@ Install:
 ```
 $ uv venv
 $ uv sync
+
 $ uv run ruff format
 $ uv run ruff check
 $ uv run pyright
+$ uv run mypy src/**/*.py
 ```
 
 To debug - use: enable_verbose_stdout_logging()
