@@ -22,8 +22,8 @@ async def crawl_page(url: str):
 
 
 agent = Agent(
-    name="Hacker News Fetcher",
-    instructions="You are an agent that fetches top Hacker News and Reddit Python posts.",
+    name="News Fetcher",
+    instructions="You are an agent that fetches top Hacker News and Reddit posts.",
     tools=[fetch_hackernews_top_posts, fetch_reddit_top_posts],
     output_type=List[Post],
 )
@@ -34,7 +34,7 @@ async def main():
 
     result = await Runner.run(
         agent,
-        input="Fetch the top 10 Hacker News posts. Also show link, link to comments, published date, author, upvotes.",
+        input="Fetch the top 10 Reddit sub 'ArtificialInteligence' posts. Also show link, link to comments, published date, author, upvotes.",
     )
     # Convert the output to JSON and print it
     json_output = json.dumps(

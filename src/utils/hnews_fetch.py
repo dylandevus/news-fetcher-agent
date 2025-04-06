@@ -57,6 +57,7 @@ def fetch_hackernews_top_posts(limit: int) -> List[Union[Post, dict]]:
             story_response = requests.get(item_url.format(story_id))
             story_response.raise_for_status()
             story_data = story_response.json()
+            # print("story_data", story_data)
 
             # Filter posts published within the last 7 days
             published_date = datetime.fromtimestamp(story_data.get("time", 0))
@@ -69,8 +70,10 @@ def fetch_hackernews_top_posts(limit: int) -> List[Union[Post, dict]]:
                     try:
                         post = Post(
                             source=SourceEnum.hnews,
+                            sub="",
                             id=str(story_id),  # Include the Hacker News post ID
                             title=story_data.get("title"),
+                            text=story_data.get("text"),
                             author=story_data.get("by"),
                             upvotes=story_data.get("score"),
                             url=story_data.get("url"),
