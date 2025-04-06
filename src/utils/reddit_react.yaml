@@ -4,11 +4,11 @@ url_template: "https://www.reddit.com/r/{subreddit}/top/.json?t=week"
 headers:
   User-Agent: "news-fetcher-agent"
 parameters:
-  subreddit: "reactjs"
+  sub: "reactjs"
   limit: 10
 response_mapping:
   - source: "REDDIT"
-  - sub: "{subreddit}"
+  - sub: "{sub}"
   - id: "post['id']"
   - title: "post['title']"
   - text: ""

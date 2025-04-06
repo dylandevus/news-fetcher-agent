@@ -6,13 +6,13 @@ from app_types.post import Post, SourceEnum
 
 
 @function_tool
-def fetch_reddit_top_posts(limit: int, reddit_sub: str) -> List[Union[Post, dict]]:
+def fetch_reddit_top_posts(limit: int, sub: str) -> List[Union[Post, dict]]:
     """
-    Fetches the top Reddit posts from the subreddit 'reddit_sub' for the past week.
+    Fetches the top Reddit posts from the subreddit 'sub' for the past week.
 
     Args:
         limit (int): Number of top posts to fetch.
-        reddit_sub (str): Name of the subreddit.
+        sub (str): Name of the subreddit.
 
     Returns:
         List[dict]: A list of dictionaries containing post metadata.
@@ -34,10 +34,10 @@ def fetch_reddit_top_posts(limit: int, reddit_sub: str) -> List[Union[Post, dict
     if limit is None:
         limit = 10
 
-    if reddit_sub is None:
-        reddit_sub = "Python"
+    if sub is None:
+        sub = "Python"
 
-    reddit_url = f"https://www.reddit.com/r/{reddit_sub}/top/.json?t=week"
+    reddit_url = f"https://www.reddit.com/r/{sub}/top/.json?t=week"
     headers = {"User-Agent": "news-fetcher-agent"}
 
     try:
@@ -50,7 +50,7 @@ def fetch_reddit_top_posts(limit: int, reddit_sub: str) -> List[Union[Post, dict
             post_data = post["data"]
             post = Post(
                 source=SourceEnum.reddit,
-                sub=reddit_sub,
+                sub=sub,
                 id=post_data.get("id"),
                 title=post_data.get("title"),
                 text="",
