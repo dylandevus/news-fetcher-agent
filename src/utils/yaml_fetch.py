@@ -61,7 +61,7 @@ def fetch_from_yaml(config_path: str, **kwargs) -> List[Dict[str, Any]]:
                         mapped_item[key] = eval(value)
                     else:
                         mapped_item[key] = eval(value.format(**kwargs))
-                except Exception as e:
+                except Exception:
                     # print(f"Error processing key '{key}' with value '{value}': {e}")
                     mapped_item[key] = None  # Set to None if an error occurs
 

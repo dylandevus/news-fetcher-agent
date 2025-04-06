@@ -22,10 +22,10 @@ Install:
 $ uv venv
 $ uv sync
 
-$ uv run ruff format
-$ uv run ruff check
-$ uv run pyright
-$ uv run mypy src/**/*.py
+$ ./run.py format
+$ ./run.py check
+$ ./run.py pyright
+$ ./run.py mypy
 ```
 
 To debug - use: enable_verbose_stdout_logging()

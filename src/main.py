@@ -23,7 +23,7 @@ async def crawl_page(url: str):
         result = await crawler.arun(
             url=url,
         )
-        print(result.markdown) # type: ignore
+        print(result.markdown)  # type: ignore
 
 
 agent = Agent(
@@ -39,7 +39,7 @@ async def main():
 
     result = await Runner.run(
         agent,
-        input="Fetch the top 10 Reddit sub 'reactjs' posts. Also show title, link, link to comments, published date, author, upvotes.",
+        input="Fetch the top 20 Reddit sub 'reactjs' posts. Also show title, link, link to comments, published date, author, upvotes.",
     )
     # Convert the output to JSON and print it
     json_output = json.dumps(
