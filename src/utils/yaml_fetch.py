@@ -86,7 +86,7 @@ def fetch_reddit(limit: int, reddit_sub: str) -> List[Dict[str, Post]]:
         List[dict]: Fetched posts.
     """
     return fetch_from_yaml(
-        "/Users/dylan/work/news-fetcher-agent/src/utils/reddit_react.yaml",
+        "src/utils/reddit_react.yaml",
         subreddit=reddit_sub,
         limit=limit,
     )
