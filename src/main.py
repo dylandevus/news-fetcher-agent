@@ -34,7 +34,7 @@ async def main():
 
     result = await Runner.run(
         agent,
-        input="Fetch the top 10 Reddit sub 'ArtificialInteligence' posts. Also show link, link to comments, published date, author, upvotes.",
+        input="Fetch the top 10 Reddit sub 'ArtificialInteligence' posts. Also show title, link, link to comments, published date, author, upvotes.",
     )
     # Convert the output to JSON and print it
     json_output = json.dumps(

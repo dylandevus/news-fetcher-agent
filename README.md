@@ -5,6 +5,7 @@ News Fetcher Agent using:
 *   OpenAI Agents SDK
 *   Structured ouput (pydantic)
 *   Crawl4ai
+*   News sources: Hacker News, Reddit Subs
 
 ### DEVELOPMENT
 
