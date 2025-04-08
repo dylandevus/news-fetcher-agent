@@ -7,6 +7,7 @@ News Fetcher Agent using:
 *   Crawl4ai
 *   Yaml config file to specify news source
 *   News sources: Hacker News, Reddit Subs
+*   Unit tests using pytest, pytest-cov
 
 ### DEVELOPMENT
 
@@ -29,6 +30,15 @@ $ ./run.py mypy
 ```
 
 To debug - use: enable_verbose_stdout_logging()
+
+To run tests:
+
+```
+$ uv run pytest src/utils/app_utils_test.py
+
+$ uv run pytest --cov=src/utils --cov-report=html
+$ open htmlcov/index.html
+```
 
 Output sample:
 

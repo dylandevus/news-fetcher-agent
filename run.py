@@ -122,12 +122,14 @@ def run_cli(command: str):
     """
     try:
         print(f"--- Running command: {command}")
-        subprocess.run(command.split(), check=True)
+        subprocess.run(command, shell=True, check=True)
         print(f"--- Successfully ran: {command}")
     except subprocess.CalledProcessError as e:
         print(f"ERROR: Failed to run '{command}': {e}", file=sys.stderr)
     except FileNotFoundError:
         print(f"ERROR: Command not found: {command.split()[0]}", file=sys.stderr)
+    except Exception as e:
+        print("Exception: ", e)
 
 
 if __name__ == "__main__":
