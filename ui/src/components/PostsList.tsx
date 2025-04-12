@@ -8,8 +8,10 @@ const GET_POSTS = gql`
     posts {
       title
       text
+      upvotes
       publishedDate
       url
+      commentUrl
     }
   }
 `;

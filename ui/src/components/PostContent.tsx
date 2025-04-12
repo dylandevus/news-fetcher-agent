@@ -5,6 +5,9 @@ interface PostContentProps {
     title: string;
     text: string;
     publishedDate?: string;
+    upvotes?: number;
+    commentUrl?: string;
+    url?: string;
   } | null;
 }
 
@@ -28,11 +31,34 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
       <span className="text-3xl font-bold text-gray-900" 
           dangerouslySetInnerHTML={{ __html: post.title }}></span>
       
-      {post.publishedDate && (
-        <div className="mt-2 text-gray-400 text-sm">
-          {post.publishedDate}
-        </div>
-      )}
+      <div className="mt-2 flex items-center text-gray-400 text-sm gap-4">
+        {post.publishedDate && (
+          <span>{post.publishedDate}</span>
+        )}
+        
+        {post.upvotes !== undefined && (
+          <span className="flex items-center">
+            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path>
+            </svg>
+            {post.upvotes.toLocaleString()}
+          </span>
+        )}
+        
+        {post.commentUrl && (
+          <a 
+            href={post.commentUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:text-blue-500 transition-colors flex items-center"
+          >
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+            </svg>
+            Comments
+          </a>
+        )}
+      </div>
       
       <div className="prose prose-lg max-w-none mt-6">
         <div 
