@@ -8,16 +8,18 @@ News Fetcher Agent using:
 *   Yaml config file to specify news source
 *   News sources: Hacker News, Reddit Subs
 *   Unit tests using pytest, pytest-cov
+*   Webapp Backend: FastAPI, Strawberry GraphQL, Pydantic, Alembic + Mako
+*   Webapp Frontend: Vite, React, TS, GraphQL, @Apollo/client, Tailwind CSS
 
 ### DEVELOPMENT
 
-Require:
+#### Require:
 
 *   `uv venv --python 3.13`
 *   `uv init`
 *   `pre-commit install`
 
-Install:
+#### Install:
 
 ```
 $ uv venv
@@ -40,7 +42,46 @@ $ uv run pytest --cov=src/utils --cov-report=html
 $ open htmlcov/index.html
 ```
 
-Output sample:
+#### Webapp - Backend
+
+Backend:
+- ./src/apis
+
+Scripts:
+
+```
+Install  $ uv add "fastapi[standard]" alembic graphene graphql-core httptools mako python-dateutil six sqlalchemy uvloop watchfiles websockets strawberry-graphql pydantic uvicorn
+
+Run      $ uvicorn src.apis.main:app --reload
+
+Test GraphQL endpoint: http://localhost:8000/graphql
+
+query {
+  news {
+    title
+    content
+  }
+}
+```
+
+Database:
+
+```
+Make a change         $ alembic revision --autogenerate -m "Description of your change"
+Apply the migration   $ alembic upgrade head
+
+```
+
+#### Webapp - Frontend
+
+Scripts:
+
+```
+Install  $ pnpm i
+Run      $ cd ui && pnpm dev
+```
+
+#### Output sample:
 
 ```
 [

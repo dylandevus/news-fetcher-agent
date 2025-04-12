@@ -2,6 +2,7 @@
 
 # uv venv --python 3.13
 # chmod +x <thisfile> then use: ./run.py init (or format, check, etc.)
+# check the "__main__" function below for more details
 import os
 import subprocess
 import sys
