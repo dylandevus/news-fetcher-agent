@@ -7,7 +7,7 @@ Run this script anytime you want to reset the database to a known state.
 import datetime
 import sys
 import os
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
 from sqlalchemy.orm import sessionmaker
 
 # Add the parent directory to sys.path to make src importable
@@ -16,19 +16,20 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Import the models and database connection
 from src.apis.database import engine
 
+
 def clear_and_seed_database():
     """Clear all data from the news table and seed it with sample data."""
     # Create a session
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = SessionLocal()
-    
+
     try:
         # Clear all existing data
         print("Clearing existing data...")
         db.execute(text("DELETE FROM news"))
         db.commit()
         print("Data cleared successfully.")
-        
+
         print("Inserting sample data...")
         # Insert using direct SQL to ensure all required fields are properly set
         news_data = [
@@ -45,7 +46,7 @@ def clear_and_seed_database():
                 "source": "HNEWS",
                 "sub": None,
                 "created_at": datetime.datetime.utcnow(),
-                "updated_at": datetime.datetime.utcnow()
+                "updated_at": datetime.datetime.utcnow(),
             },
             {
                 "post_id": "hn2",
@@ -60,10 +61,10 @@ def clear_and_seed_database():
                 "source": "HNEWS",
                 "sub": None,
                 "created_at": datetime.datetime.utcnow(),
-                "updated_at": datetime.datetime.utcnow()
+                "updated_at": datetime.datetime.utcnow(),
             },
             {
-                "post_id": "reddit1", 
+                "post_id": "reddit1",
                 "title": "Introducing React 19",
                 "content": "React 19 comes with exciting new features for better performance and developer experience...",
                 "text": "React 19 comes with exciting new features for better performance and developer experience...",
@@ -75,7 +76,7 @@ def clear_and_seed_database():
                 "source": "REDDIT",
                 "sub": "reactjs",
                 "created_at": datetime.datetime.utcnow(),
-                "updated_at": datetime.datetime.utcnow()
+                "updated_at": datetime.datetime.utcnow(),
             },
             {
                 "post_id": "reddit2",
@@ -90,7 +91,7 @@ def clear_and_seed_database():
                 "source": "REDDIT",
                 "sub": "reactjs",
                 "created_at": datetime.datetime.utcnow(),
-                "updated_at": datetime.datetime.utcnow()
+                "updated_at": datetime.datetime.utcnow(),
             },
             {
                 "post_id": "reddit3",
@@ -105,10 +106,10 @@ def clear_and_seed_database():
                 "source": "REDDIT",
                 "sub": "reactjs",
                 "created_at": datetime.datetime.utcnow(),
-                "updated_at": datetime.datetime.utcnow()
-            }
+                "updated_at": datetime.datetime.utcnow(),
+            },
         ]
-        
+
         # Insert each news item using direct SQL
         for item in news_data:
             db.execute(
@@ -120,18 +121,19 @@ def clear_and_seed_database():
                         :post_id, :title, :content, :text, :author, :upvotes, :url,
                         :published_date, :comment_url, :source, :sub, :created_at, :updated_at
                     )
-                """), 
-                item
+                """),
+                item,
             )
-        
+
         db.commit()
         print(f"Added {len(news_data)} sample news items successfully.")
-        
+
     except Exception as e:
         db.rollback()
         print(f"Error: {e}")
     finally:
         db.close()
+
 
 if __name__ == "__main__":
     clear_and_seed_database()

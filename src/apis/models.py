@@ -5,16 +5,18 @@ import enum
 
 Base = declarative_base()
 
+
 class SourceEnum(enum.Enum):
     HNEWS = "HNEWS"
     REDDIT = "REDDIT"
+
 
 class Posts(Base):
     __tablename__ = "news"
 
     # Auto-incrementing primary key (different from the post_id)
     id = Column(Integer, primary_key=True, index=True)
-    
+
     # Fields from Post model
     post_id = Column(String, index=True, nullable=True)  # Post ID from source
     title = Column(String, nullable=True)
@@ -24,14 +26,16 @@ class Posts(Base):
     url = Column(String, nullable=True)
     published_date = Column(String, nullable=True)  # Keeping as string for flexibility
     comment_url = Column(String, nullable=True)
-    
+
     # Source tracking
     source = Column(SQLAlchemyEnum(SourceEnum), nullable=True)
     sub = Column(String, nullable=True)  # Subreddit or subcategory
-    
+
     # System fields
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-    
+    updated_at = Column(
+        DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow
+    )
+
     def __repr__(self):
         return f"<News(id={self.id}, title='{self.title}', source='{self.source}')>"

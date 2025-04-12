@@ -1,16 +1,15 @@
 import strawberry
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
-from sqlalchemy.orm import Session
 from typing import List, Optional
 
 from .database import get_db, engine
 from . import models
-from src.app_types.post import Post, SourceEnum
 
 # Create tables in the database
 models.Base.metadata.create_all(bind=engine)
+
 
 # Create a strawberry version of the Post type for GraphQL # TODO: find a way to reuse Post class from app_types
 @strawberry.type
@@ -26,6 +25,7 @@ class PostType:
     published_date: Optional[str]
     comment_url: Optional[str]
 
+
 @strawberry.type
 class Query:
     @strawberry.field
@@ -33,24 +33,26 @@ class Query:
         """Get all posts from the database"""
         db = next(get_db())
         db_posts = db.query(models.Posts).all()
-        
+
         # Convert database model to GraphQL type
         result = []
         for post in db_posts:
-            result.append(PostType(
-                id=post.post_id,
-                title=post.title,
-                text=post.text,
-                author=post.author,
-                upvotes=post.upvotes,
-                url=post.url,
-                published_date=post.published_date,
-                comment_url=post.comment_url,
-                source=post.source.value if post.source else None,
-                sub=post.sub
-            ))
+            result.append(
+                PostType(
+                    id=post.post_id,
+                    title=post.title,
+                    text=post.text,
+                    author=post.author,
+                    upvotes=post.upvotes,
+                    url=post.url,
+                    published_date=post.published_date,
+                    comment_url=post.comment_url,
+                    source=post.source.value if post.source else None,
+                    sub=post.sub,
+                )
+            )
         return result
-    
+
     @strawberry.field
     def post(self, info, id: int) -> Optional[PostType]:
         """Get a specific post by id"""
@@ -58,7 +60,7 @@ class Query:
         posts = db.query(models.Posts).filter(models.Posts.id == id).first()
         if not posts:
             return None
-            
+
         return PostType(
             id=posts.post_id,
             title=posts.title,
@@ -69,8 +71,9 @@ class Query:
             published_date=posts.published_date,
             comment_url=posts.comment_url,
             source=posts.source.value if posts.source else None,
-            sub=posts.sub
+            sub=posts.sub,
         )
+
 
 schema = strawberry.Schema(query=Query)
 
