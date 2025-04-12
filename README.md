@@ -17,6 +17,7 @@ News Fetcher Agent using:
 
 *   `uv venv --python 3.13`
 *   `uv init`
+*   `source .venv/bin/activate`
 *   `pre-commit install`
 
 #### Install:
@@ -24,6 +25,7 @@ News Fetcher Agent using:
 ```
 $ uv venv
 $ uv sync
+$ python3 src/main.py
 
 $ ./run.py format
 $ ./run.py check

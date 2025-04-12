@@ -3,7 +3,7 @@ from typing import List, Dict, Any
 from datetime import datetime  # type: ignore # noqa: F401
 from app_types.post import Post
 from agents import function_tool
-from app_utils import load_yaml_config
+from .app_utils import load_yaml_config
 
 
 def fetch_from_yaml(config_path: str, **kwargs) -> List[Dict[str, Any]]:

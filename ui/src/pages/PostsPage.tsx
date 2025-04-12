@@ -32,9 +32,18 @@ const PostsPage: React.FC = () => {
         <div className="w-2/3 bg-white overflow-hidden">
           {selectedPost ? (
             <div className="p-8 h-[calc(100vh-10rem)] overflow-y-auto">
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">{selectedPost.title}</h1>
-              <div className="prose prose-lg max-w-none">
-                <p className="text-gray-700 leading-relaxed">{selectedPost.text}</p>
+              <span className="text-3xl font-bold text-gray-900" 
+                  dangerouslySetInnerHTML={{ __html: selectedPost.title }}></span>
+              <div className="prose prose-lg max-w-none mt-6">
+                <div 
+                  className="text-gray-700 leading-relaxed whitespace-pre-line"
+                  dangerouslySetInnerHTML={{ 
+                    __html: (selectedPost?.text ?? '')
+                      .replace(/&quot;/g, '"')
+                      .replace(/\n/g, '<br />')
+                      .replace(/\r/g, '')
+                  }}
+                ></div>
               </div>
             </div>
           ) : (
