@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import NewsPage from "./pages/NewsPage";
+import PostsPage from "./pages/PostsPage";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<NewsPage />} />
+        <Route path="/" element={<PostsPage />} />
       </Routes>
     </Router>
   );
