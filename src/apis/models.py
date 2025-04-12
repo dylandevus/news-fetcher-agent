@@ -9,7 +9,7 @@ class SourceEnum(enum.Enum):
     HNEWS = "HNEWS"
     REDDIT = "REDDIT"
 
-class News(Base):
+class Posts(Base):
     __tablename__ = "news"
 
     # Auto-incrementing primary key (different from the post_id)

@@ -24,7 +24,7 @@ const NewsPage: React.FC = () => {
             <h2 className="text-lg font-medium text-gray-800">Headlines</h2>
           </div>
           <div className="divide-y divide-gray-100 h-[calc(100vh-10rem)] overflow-y-auto">
-            <NewsList onNewsClick={handleNewsClick} />
+            <NewsList onPostClick={handleNewsClick} />
           </div>
         </div>
 

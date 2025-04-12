@@ -32,7 +32,7 @@ class Query:
     def posts(self, info) -> List[PostType]:
         """Get all posts from the database"""
         db = next(get_db())
-        db_posts = db.query(models.News).all()
+        db_posts = db.query(models.Posts).all()
         
         # Convert database model to GraphQL type
         result = []
@@ -55,52 +55,7 @@ class Query:
     def post(self, info, id: int) -> Optional[PostType]:
         """Get a specific post by id"""
         db = next(get_db())
-        posts = db.query(models.News).filter(models.News.id == id).first()
-        if not posts:
-            return None
-            
-        return PostType(
-            id=posts.post_id,
-            title=posts.title,
-            text=posts.text,
-            author=posts.author,
-            upvotes=posts.upvotes,
-            url=posts.url,
-            published_date=posts.published_date,
-            comment_url=posts.comment_url,
-            source=posts.source.value if posts.source else None,
-            sub=posts.sub
-        )
-    
-    # Maintain backward compatibility with existing frontend
-    @strawberry.field
-    def news(self, info) -> List[PostType]:
-        """Alias for posts() to maintain backward compatibility"""
-        db = next(get_db())
-        db_posts = db.query(models.News).all()
-        
-        # Convert database model to GraphQL type - duplicated from posts() for reliability
-        result = []
-        for posts in db_posts:
-            result.append(PostType(
-                id=posts.post_id,
-                title=posts.title,
-                text=posts.text,
-                author=posts.author,
-                upvotes=posts.upvotes,
-                url=posts.url,
-                published_date=posts.published_date,
-                comment_url=posts.comment_url,
-                source=posts.source.value if posts.source else None,
-                sub=posts.sub
-            ))
-        return result
-    
-    @strawberry.field
-    def news_item(self, info, id: int) -> Optional[PostType]:
-        """Alias for post() to maintain backward compatibility"""
-        db = next(get_db())
-        posts = db.query(models.News).filter(models.News.id == id).first()
+        posts = db.query(models.Posts).filter(models.Posts.id == id).first()
         if not posts:
             return None
             

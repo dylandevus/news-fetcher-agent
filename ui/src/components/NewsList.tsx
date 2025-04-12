@@ -4,14 +4,14 @@ import "../App.css";
 
 const GET_NEWS = gql`
   query GetNews {
-    news {
+    posts {
       title
       text
     }
   }
 `;
 
-const NewsList: React.FC<{ onNewsClick: (news: { title: string; text: string }) => void }> = ({ onNewsClick }) => {
+const NewsList: React.FC<{ onPostClick: (news: { title: string; text: string }) => void }> = ({ onPostClick }) => {
   const { loading, error, data } = useQuery(GET_NEWS);
 
   if (loading) return (
@@ -29,11 +29,11 @@ const NewsList: React.FC<{ onNewsClick: (news: { title: string; text: string }) 
 
   return (
     <>
-      {data.news.map((item: { title: string; text: string }, index: number) => (
+      {data.posts.map((item: { title: string; text: string }, index: number) => (
         <div
           key={index}
           className="p-4 hover:bg-blue-50 transition-colors duration-200 cursor-pointer"
-          onClick={() => onNewsClick(item)}
+          onClick={() => onPostClick(item)}
         >
           <h3 className="font-medium text-gray-800 hover:text-blue-600 transition-colors">{item.title}</h3>
           <p className="text-gray-500 text-sm mt-1 line-clamp-2">{item.text}</p>
