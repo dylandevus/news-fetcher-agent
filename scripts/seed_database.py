@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Database seed script to clear and re-insert sample news data.
+Database seed script to clear and re-insert sample post data.
 Run this script anytime you want to reset the database to a known state.
 """
 
@@ -18,7 +18,7 @@ from src.apis.database import engine
 
 
 def clear_and_seed_database():
-    """Clear all data from the news table and seed it with sample data."""
+    """Clear all data from the posts table and seed it with sample data."""
     # Create a session
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = SessionLocal()
@@ -26,17 +26,16 @@ def clear_and_seed_database():
     try:
         # Clear all existing data
         print("Clearing existing data...")
-        db.execute(text("DELETE FROM news"))
+        db.execute(text("DELETE FROM posts"))
         db.commit()
         print("Data cleared successfully.")
 
         print("Inserting sample data...")
         # Insert using direct SQL to ensure all required fields are properly set
-        news_data = [
+        post_data = [
             {
                 "post_id": "hn1",
                 "title": "New Developments in AI Research",
-                "content": "Researchers at OpenAI have announced a breakthrough in language model training...",
                 "text": "Researchers at OpenAI have announced a breakthrough in language model training...",
                 "author": "AIResearcher",
                 "upvotes": 342,
@@ -51,7 +50,6 @@ def clear_and_seed_database():
             {
                 "post_id": "hn2",
                 "title": "The Future of Quantum Computing",
-                "content": "Quantum computing is set to revolutionize computational capabilities...",
                 "text": "Quantum computing is set to revolutionize computational capabilities...",
                 "author": "QuantumPro",
                 "upvotes": 221,
@@ -66,7 +64,6 @@ def clear_and_seed_database():
             {
                 "post_id": "reddit1",
                 "title": "Introducing React 19",
-                "content": "React 19 comes with exciting new features for better performance and developer experience...",
                 "text": "React 19 comes with exciting new features for better performance and developer experience...",
                 "author": "ReactTeam",
                 "upvotes": 1520,
@@ -81,7 +78,6 @@ def clear_and_seed_database():
             {
                 "post_id": "reddit2",
                 "title": "Tutorial: Building a News Fetcher with FastAPI and React",
-                "content": "Learn how to build a news aggregator application using FastAPI, GraphQL, and React...",
                 "text": "Learn how to build a news aggregator application using FastAPI, GraphQL, and React...",
                 "author": "WebDevExpert",
                 "upvotes": 987,
@@ -96,7 +92,6 @@ def clear_and_seed_database():
             {
                 "post_id": "reddit3",
                 "title": "Optimizing Tailwind CSS for Production",
-                "content": "Here's how to optimize your Tailwind CSS setup for production, reducing bundle size by up to 90%...",
                 "text": "Here's how to optimize your Tailwind CSS setup for production, reducing bundle size by up to 90%...",
                 "author": "CSSGuru",
                 "upvotes": 645,
@@ -110,15 +105,15 @@ def clear_and_seed_database():
             },
         ]
 
-        # Insert each news item using direct SQL
-        for item in news_data:
+        # Insert each post item using direct SQL
+        for item in post_data:
             db.execute(
                 text("""
-                    INSERT INTO news (
-                        post_id, title, content, text, author, upvotes, url, 
+                    INSERT INTO posts (
+                        post_id, title, text, author, upvotes, url, 
                         published_date, comment_url, source, sub, created_at, updated_at
                     ) VALUES (
-                        :post_id, :title, :content, :text, :author, :upvotes, :url,
+                        :post_id, :title, :text, :author, :upvotes, :url,
                         :published_date, :comment_url, :source, :sub, :created_at, :updated_at
                     )
                 """),
@@ -126,7 +121,7 @@ def clear_and_seed_database():
             )
 
         db.commit()
-        print(f"Added {len(news_data)} sample news items successfully.")
+        print(f"Added {len(post_data)} sample posts successfully.")
 
     except Exception as e:
         db.rollback()

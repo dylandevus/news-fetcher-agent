@@ -12,30 +12,21 @@ class SourceEnum(enum.Enum):
 
 
 class Posts(Base):
-    __tablename__ = "news"
+    __tablename__ = "posts"
 
-    # Auto-incrementing primary key (different from the post_id)
     id = Column(Integer, primary_key=True, index=True)
-
-    # Fields from Post model
-    post_id = Column(String, index=True, nullable=True)  # Post ID from source
+    post_id = Column(String, index=True, nullable=True)
     title = Column(String, nullable=True)
-    text = Column(String, nullable=True)  # Same as 'content' in previous model
+    text = Column(String, nullable=True)
     author = Column(String, nullable=True)
     upvotes = Column(Integer, nullable=True)
     url = Column(String, nullable=True)
-    published_date = Column(String, nullable=True)  # Keeping as string for flexibility
+    published_date = Column(String, nullable=True)
     comment_url = Column(String, nullable=True)
-
-    # Source tracking
     source = Column(SQLAlchemyEnum(SourceEnum), nullable=True)
-    sub = Column(String, nullable=True)  # Subreddit or subcategory
-
-    # System fields
+    sub = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(
-        DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow
-    )
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
-        return f"<News(id={self.id}, title='{self.title}', source='{self.source}')>"
+        return f"<Posts(id={self.id}, title='{self.title}', source='{self.source}')>"
