@@ -8,7 +8,7 @@ News Fetcher Agent using:
 *   Yaml config file to specify news source
 *   News sources: Hacker News, Reddit Subs
 *   Unit tests using pytest, pytest-cov
-*   Webapp Backend: FastAPI, Strawberry GraphQL, Pydantic, Alembic + Mako
+*   Webapp Backend: FastAPI, Strawberry GraphQL, Pydantic, Alembic + Mako, SQLAlchemy ORM
 *   Webapp Frontend: Vite, React, TS, GraphQL, @Apollo/client, Tailwind CSS
 
 ### DEVELOPMENT
@@ -69,6 +69,8 @@ Database:
 ```
 Make a change         $ alembic revision --autogenerate -m "Description of your change"
 Apply the migration   $ alembic upgrade head
+
+Seed data    $ python scripts/seed_database.py
 
 ```
 

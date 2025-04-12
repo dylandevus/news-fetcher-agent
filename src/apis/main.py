@@ -3,40 +3,119 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
 from sqlalchemy.orm import Session
+from typing import List, Optional
 
 from .database import get_db, engine
 from . import models
-
+from src.app_types.post import Post, SourceEnum
 
 # Create tables in the database
 models.Base.metadata.create_all(bind=engine)
 
-
+# Create a strawberry version of the Post type for GraphQL # TODO: find a way to reuse Post class from app_types
 @strawberry.type
-class User:
-    name: str
-    age: int
-
-
-@strawberry.type
-class News:
-    title: str
-    content: str
-
+class PostType:
+    source: Optional[str]
+    sub: Optional[str]
+    id: Optional[str]
+    title: Optional[str]
+    text: Optional[str]
+    author: Optional[str]
+    upvotes: Optional[int]
+    url: Optional[str]
+    published_date: Optional[str]
+    comment_url: Optional[str]
 
 @strawberry.type
 class Query:
     @strawberry.field
-    def user(self) -> User:
-        return User(name="Patrick", age=100)
-
+    def posts(self, info) -> List[PostType]:
+        """Get all posts from the database"""
+        db = next(get_db())
+        db_posts = db.query(models.News).all()
+        
+        # Convert database model to GraphQL type
+        result = []
+        for post in db_posts:
+            result.append(PostType(
+                id=post.post_id,
+                title=post.title,
+                text=post.text,
+                author=post.author,
+                upvotes=post.upvotes,
+                url=post.url,
+                published_date=post.published_date,
+                comment_url=post.comment_url,
+                source=post.source.value if post.source else None,
+                sub=post.sub
+            ))
+        return result
+    
     @strawberry.field
-    def news(self) -> list[News]:
-        return [
-            News(title="News 1", content="Content of News 1"),
-            News(title="News 2", content="Content of News 2"),
-        ]
-
+    def post(self, info, id: int) -> Optional[PostType]:
+        """Get a specific post by id"""
+        db = next(get_db())
+        posts = db.query(models.News).filter(models.News.id == id).first()
+        if not posts:
+            return None
+            
+        return PostType(
+            id=posts.post_id,
+            title=posts.title,
+            text=posts.text,
+            author=posts.author,
+            upvotes=posts.upvotes,
+            url=posts.url,
+            published_date=posts.published_date,
+            comment_url=posts.comment_url,
+            source=posts.source.value if posts.source else None,
+            sub=posts.sub
+        )
+    
+    # Maintain backward compatibility with existing frontend
+    @strawberry.field
+    def news(self, info) -> List[PostType]:
+        """Alias for posts() to maintain backward compatibility"""
+        db = next(get_db())
+        db_posts = db.query(models.News).all()
+        
+        # Convert database model to GraphQL type - duplicated from posts() for reliability
+        result = []
+        for posts in db_posts:
+            result.append(PostType(
+                id=posts.post_id,
+                title=posts.title,
+                text=posts.text,
+                author=posts.author,
+                upvotes=posts.upvotes,
+                url=posts.url,
+                published_date=posts.published_date,
+                comment_url=posts.comment_url,
+                source=posts.source.value if posts.source else None,
+                sub=posts.sub
+            ))
+        return result
+    
+    @strawberry.field
+    def news_item(self, info, id: int) -> Optional[PostType]:
+        """Alias for post() to maintain backward compatibility"""
+        db = next(get_db())
+        posts = db.query(models.News).filter(models.News.id == id).first()
+        if not posts:
+            return None
+            
+        return PostType(
+            id=posts.post_id,
+            title=posts.title,
+            text=posts.text,
+            author=posts.author,
+            upvotes=posts.upvotes,
+            url=posts.url,
+            published_date=posts.published_date,
+            comment_url=posts.comment_url,
+            source=posts.source.value if posts.source else None,
+            sub=posts.sub
+        )
 
 schema = strawberry.Schema(query=Query)
 

@@ -5,10 +5,10 @@ import Header from "../components/Header";
 const NewsPage: React.FC = () => {
   const [selectedNews, setSelectedNews] = useState<{
     title: string;
-    content: string;
+    text: string;
   } | null>(null);
 
-  const handleNewsClick = (news: { title: string; content: string }) => {
+  const handleNewsClick = (news: { title: string; text: string }) => {
     setSelectedNews(news);
   };
 
@@ -34,7 +34,7 @@ const NewsPage: React.FC = () => {
             <div className="p-8 h-[calc(100vh-10rem)] overflow-y-auto">
               <h1 className="text-3xl font-bold text-gray-900 mb-6">{selectedNews.title}</h1>
               <div className="prose prose-lg max-w-none">
-                <p className="text-gray-700 leading-relaxed">{selectedNews.content}</p>
+                <p className="text-gray-700 leading-relaxed">{selectedNews.text}</p>
               </div>
             </div>
           ) : (
