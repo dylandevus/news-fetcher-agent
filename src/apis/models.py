@@ -26,7 +26,9 @@ class Posts(Base):
     source = Column(SQLAlchemyEnum(SourceEnum), nullable=True)
     sub = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    updated_at = Column(
+        DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow
+    )
 
     def __repr__(self):
         return f"<Posts(id={self.id}, title='{self.title}', source='{self.source}')>"

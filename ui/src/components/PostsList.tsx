@@ -1,17 +1,20 @@
 import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import "../App.css";
+import PostListItem from "./PostListItem";
 
 const GET_POSTS = gql`
   query GetPosts {
     posts {
       title
       text
+      publishedDate
+      url
     }
   }
 `;
 
-const PostsList: React.FC<{ onPostClick: (post: { title: string; text: string }) => void }> = ({ onPostClick }) => {
+const PostsList: React.FC<{ onPostClick: (post: { title: string; text: string; publishedDate?: string }) => void }> = ({ onPostClick }) => {
   const { loading, error, data } = useQuery(GET_POSTS);
 
   if (loading) return (
@@ -27,17 +30,21 @@ const PostsList: React.FC<{ onPostClick: (post: { title: string; text: string })
     </div>
   );
 
+  // Sort posts by date, latest first
+  const sortedPosts = [...data.posts].sort((a, b) => {
+    if (!a.publishedDate) return 1;
+    if (!b.publishedDate) return -1;
+    return new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime();
+  });
+
   return (
     <>
-      {data.posts.map((item: { title: string; text: string }, index: number) => (
-        <div
+      {sortedPosts.map((item: { title: string; text: string; publishedDate?: string }, index: number) => (
+        <PostListItem
           key={index}
-          className="p-4 hover:bg-blue-50 transition-colors duration-200 cursor-pointer"
-          onClick={() => onPostClick(item)}
-        >
-          <h3 className="font-medium text-gray-800 hover:text-blue-600 transition-colors">{item.title}</h3>
-          <p className="text-gray-500 text-sm mt-1 line-clamp-2">{item.text}</p>
-        </div>
+          post={item}
+          onClick={onPostClick}
+        />
       ))}
     </>
   );

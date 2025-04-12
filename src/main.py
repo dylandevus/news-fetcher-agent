@@ -58,7 +58,7 @@ def save_posts_to_database(posts: List[Post]):
                 updated_at=datetime.datetime.utcnow(),
             )
             db.add(db_post)
-        
+
         # Commit all posts to the database
         db.commit()
         print(f"Successfully saved {len(posts)} posts to the database")
@@ -92,11 +92,15 @@ async def main():
         agent,
         input="Fetch the top 10 Reddit sub 'reactjs' posts. Also show title, link, link to comments, published date, author, upvotes.",
     )
-    
+
     # Save posts to the database using SQLAlchemy ORM
-    if result.final_output and isinstance(result.final_output, list) and len(result.final_output) > 0:
+    if (
+        result.final_output
+        and isinstance(result.final_output, list)
+        and len(result.final_output) > 0
+    ):
         save_posts_to_database(result.final_output)
-    
+
     # Convert the output to JSON and print it
     json_output = json.dumps(
         [post.model_dump() for post in result.final_output], indent=4

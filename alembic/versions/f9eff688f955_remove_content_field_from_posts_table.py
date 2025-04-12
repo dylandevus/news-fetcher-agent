@@ -5,13 +5,10 @@ Revises: cdf5af70cf95
 Create Date: 2025-04-11 21:11:32.672474
 
 """
-from alembic import op
-import sqlalchemy as sa
-
 
 # revision identifiers, used by Alembic.
-revision = 'f9eff688f955'
-down_revision = 'cdf5af70cf95'
+revision = "f9eff688f955"
+down_revision = "cdf5af70cf95"
 branch_labels = None
 depends_on = None
 
