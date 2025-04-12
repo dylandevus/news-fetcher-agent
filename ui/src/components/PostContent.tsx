@@ -2,6 +2,9 @@ import React from "react";
 
 interface PostContentProps {
   post: {
+    id: string;
+    source: string;
+    sub?: string;
     title: string;
     text: string;
     publishedDate?: string;
@@ -25,6 +28,7 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
       </div>
     );
   }
+  const commentsUrl = post.commentUrl || (post.source === 'REDDIT' ? `https://www.reddit.com/r/${post.sub}/comments/${post.id}` : '')
 
   return (
     <div className="p-8 h-[calc(100vh-10rem)] overflow-y-auto">
@@ -45,9 +49,9 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
           </span>
         )}
         
-        {post.commentUrl && (
+        {commentsUrl && (
           <a 
-            href={post.commentUrl} 
+            href={commentsUrl} 
             target="_blank" 
             rel="noopener noreferrer"
             className="hover:text-blue-500 transition-colors flex items-center"

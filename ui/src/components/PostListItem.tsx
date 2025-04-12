@@ -3,12 +3,15 @@ import { formatRelativeDate } from "../utils/dateUtils";
 
 interface PostListItemProps {
   post: {
+    source?: string;
+    sub?: string;
     title: string;
     text: string;
+    upvotes?: number;
     publishedDate?: string;
     url?: string;
   };
-  onClick: (post: { title: string; text: string; publishedDate?: string; url?: string }) => void;
+  onClick: (post: { source: string; sub: string; title: string; text: string; upvotes?: number, publishedDate?: string; url?: string; }) => void;
 }
 
 const PostListItem: React.FC<PostListItemProps> = ({ post, onClick }) => {
@@ -39,7 +42,7 @@ const PostListItem: React.FC<PostListItemProps> = ({ post, onClick }) => {
     >
       {/* Top section with title and external link icon */}
       <div className="flex justify-between items-start">
-        <h3 className="font-medium text-gray-800 hover:text-blue-600 transition-colors pr-2 flex-grow">
+        <h3 className="font-semibold text-gray-800 hover:text-blue-600 transition-colors pr-2 flex-grow">
           {post.title}
         </h3>
         {post.url && (
@@ -58,16 +61,15 @@ const PostListItem: React.FC<PostListItemProps> = ({ post, onClick }) => {
       </div>
       
       {/* Post text content */}
-      <p className="text-gray-500 text-sm mt-1 mb-4 line-clamp-2">{post.text}</p>
+      <p className="text-gray-500 text-sm mt-1 mb-1 line-clamp-2">{post.text}</p>
       
-      {/* Date at bottom right */}
-      {post.publishedDate && (
-        <div className="absolute bottom-3 right-5">
-          <span className="text-gray-400 text-xs">
-            {formatRelativeDate(post.publishedDate)}
-          </span>
-        </div>
-      )}
+      {/* Footer row with sub and date */}
+      <div className="flex items-center mt-2 text-xs text-gray-500">
+        <span>{post.source || ''}</span>
+        <span className="ml-3">{post.sub || ''}</span>
+        <span className="ml-3">{post.publishedDate && formatRelativeDate(post.publishedDate)}</span>
+        <span className="ml-3">{post.upvotes || ''} likes</span>
+      </div>
     </div>
   );
 };

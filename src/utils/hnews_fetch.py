@@ -3,7 +3,7 @@ from typing import List, Union
 from pydantic import ValidationError
 from agents import function_tool
 from datetime import datetime, timedelta
-from app_types.post import Post, SourceEnum
+from ..app_types.post import Post, SourceEnum
 
 
 @function_tool

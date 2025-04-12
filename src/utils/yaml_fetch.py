@@ -1,7 +1,7 @@
 import requests
 from typing import List, Dict, Any
 from datetime import datetime  # type: ignore # noqa: F401
-from app_types.post import Post
+from ..app_types.post import Post
 from agents import function_tool
 from .app_utils import load_yaml_config
 
@@ -72,7 +72,7 @@ def fetch_reddit(limit: int, reddit_sub: str) -> List[Dict[str, Post]]:
         List[dict]: Fetched posts.
     """
     return fetch_from_yaml(
-        "src/utils/reddit_react.yaml",
+        f"src/utils/reddit_{reddit_sub}.yaml",
         subreddit=reddit_sub,
         limit=limit,
     )

@@ -6,6 +6,9 @@ import PostListItem from "./PostListItem";
 const GET_POSTS = gql`
   query GetPosts {
     posts {
+      id
+      source
+      sub
       title
       text
       upvotes
@@ -41,7 +44,7 @@ const PostsList: React.FC<{ onPostClick: (post: { title: string; text: string; p
 
   return (
     <>
-      {sortedPosts.map((item: { title: string; text: string; publishedDate?: string }, index: number) => (
+      {sortedPosts.map((item: { id: string; source: string; sub: string; title: string; text: string; publishedDate?: string }, index: number) => (
         <PostListItem
           key={index}
           post={item}
