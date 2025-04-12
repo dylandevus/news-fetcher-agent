@@ -26,11 +26,8 @@ def save_posts_to_database(posts: List[Post]):
     """
     db = SessionLocal()
     try:
-        # Track statistics
-        total_posts = len(posts)
-        new_posts = 0
         skipped_posts = 0
-        
+
         # Create Posts models from Post pydantic models
         for post in posts:
             # Check if post with this ID already exists in database
@@ -41,7 +38,7 @@ def save_posts_to_database(posts: List[Post]):
                     print(f"Skipping ID: {post.id}, Title: {post.title}")
                     skipped_posts += 1
                     continue
-            
+
             # Create a new Posts database model
             source_enum = None
             if post.source:
@@ -71,7 +68,7 @@ def save_posts_to_database(posts: List[Post]):
                 updated_at=datetime.datetime.utcnow(),
             )
             db.add(db_post)
-        
+
         # Commit all posts to the database
         db.commit()
         print(f"Successfully saved {len(posts)} posts to the database")
