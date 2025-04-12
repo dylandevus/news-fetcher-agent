@@ -29,6 +29,13 @@ $ ./run.py format
 $ ./run.py check
 $ ./run.py pyright
 $ ./run.py mypy
+
+OR:
+$ python3 -m venv .venv
+$ source .venv/bin/activate
+$ pip3 install -r requirements.txt
+$ cd src
+$ python3 main.py
 ```
 
 To debug - use: enable_verbose_stdout_logging()
