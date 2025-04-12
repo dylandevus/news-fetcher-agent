@@ -40,7 +40,7 @@ async def main():
 
     result = await Runner.run(
         agent,
-        input="Fetch the top 20 Reddit sub 'ArtificialInteligence' posts. Also show title, link, link to comments, published date, author, upvotes.",
+        input="Fetch the top 20 Reddit sub 'reactjs' posts. Also show title, link, link to comments, published date, author, upvotes.",
     )
 
     # Save posts to the database using SQLAlchemy ORM

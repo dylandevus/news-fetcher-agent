@@ -3,6 +3,7 @@ import { formatRelativeDate } from "../utils/dateUtils";
 
 interface PostListItemProps {
   post: {
+    id?: string;
     source?: string;
     sub?: string;
     title: string;
@@ -10,11 +11,13 @@ interface PostListItemProps {
     upvotes?: number;
     publishedDate?: string;
     url?: string;
+    commentUrl?: string;
   };
-  onClick: (post: { source: string; sub: string; title: string; text: string; upvotes?: number, publishedDate?: string; url?: string; }) => void;
+  onClick: (post: { id?: string; source?: string; sub?: string; title: string; text: string; upvotes?: number; publishedDate?: string; url?: string; commentUrl?: string; }) => void;
+  isActive?: boolean;
 }
 
-const PostListItem: React.FC<PostListItemProps> = ({ post, onClick }) => {
+const PostListItem: React.FC<PostListItemProps> = ({ post, onClick, isActive = false }) => {
   const handleClick = (event: React.MouseEvent) => {
     // If Cmd key (Mac) or Ctrl key (Windows) is pressed and URL exists
     if ((event.metaKey || event.ctrlKey) && post.url) {
@@ -37,7 +40,11 @@ const PostListItem: React.FC<PostListItemProps> = ({ post, onClick }) => {
 
   return (
     <div
-      className="p-4 hover:bg-blue-50 transition-colors duration-200 cursor-pointer relative"
+      className={`p-4 transition-colors duration-200 cursor-pointer relative ${
+        isActive 
+          ? 'bg-blue-50 border-l-4 border-blue-500' 
+          : 'hover:bg-blue-50 border-l-4 border-transparent'
+      }`}
       onClick={handleClick}
     >
       {/* Top section with title and external link icon */}

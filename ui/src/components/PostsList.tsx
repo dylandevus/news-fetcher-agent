@@ -19,8 +19,11 @@ const GET_POSTS = gql`
   }
 `;
 
-const PostsList: React.FC<{ onPostClick: (post: { title: string; text: string; publishedDate?: string }) => void }> = ({ onPostClick }) => {
+const PostsList: React.FC<{ 
+  onPostClick: (post: { id: string; title: string; text: string; publishedDate?: string; url?: string; source?: string; sub?: string; commentUrl?: string }) => void;
+}> = ({ onPostClick }) => {
   const { loading, error, data } = useQuery(GET_POSTS);
+  const [activePostId, setActivePostId] = React.useState<string | null>(null);
 
   if (loading) return (
     <div className="flex justify-center items-center p-8">
@@ -44,11 +47,15 @@ const PostsList: React.FC<{ onPostClick: (post: { title: string; text: string; p
 
   return (
     <>
-      {sortedPosts.map((item: { id: string; source: string; sub: string; title: string; text: string; publishedDate?: string }, index: number) => (
+      {sortedPosts.map((item: { id: string; source: string; sub: string; title: string; text: string; publishedDate?: string; url?: string; commentUrl?: string }, index: number) => (
         <PostListItem
           key={index}
           post={item}
-          onClick={onPostClick}
+          onClick={(post) => {
+            setActivePostId(post.id ?? '');
+            onPostClick({ ...post, id: post.id || "" })
+          }}
+          isActive={activePostId === item.id}
         />
       ))}
     </>
