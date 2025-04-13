@@ -21,7 +21,8 @@ const GET_POSTS = gql`
 
 const PostsList: React.FC<{ 
   onPostClick: (post: { id: string; title: string; text: string; publishedDate?: string; url?: string; source?: string; sub?: string; commentUrl?: string }) => void;
-}> = ({ onPostClick }) => {
+  selectedSources: string[];
+}> = ({ onPostClick, selectedSources }) => {
   const { loading, error, data } = useQuery(GET_POSTS);
   const [activePostId, setActivePostId] = React.useState<string | null>(null);
 
@@ -45,9 +46,14 @@ const PostsList: React.FC<{
     return new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime();
   });
 
+  // Filter posts by selected sources if any are selected
+  const filteredPosts = selectedSources.length > 0
+    ? sortedPosts.filter(post => selectedSources.includes(post.source))
+    : sortedPosts;
+
   return (
     <>
-      {sortedPosts.map((item: { id: string; source: string; sub: string; title: string; text: string; publishedDate?: string; url?: string; commentUrl?: string }, index: number) => (
+      {filteredPosts.map((item: { id: string; source: string; sub: string; title: string; text: string; publishedDate?: string; url?: string; commentUrl?: string }, index: number) => (
         <PostListItem
           key={index}
           post={item}

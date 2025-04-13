@@ -38,9 +38,10 @@ agent = Agent(
 async def main():
     # await crawl_page("https://www.nbcnews.com/business")
 
+    # subs: reactjs, ArtificialInteligence, ChatGPTPro
     result = await Runner.run(
         agent,
-        input="Fetch the top 20 Reddit sub 'reactjs' posts. Also show title, link, link to comments, published date, author, upvotes.",
+        input="Fetch the top 20 Reddit sub 'ChatGPTPro' posts. Also show title, link, link to comments, published date, author, upvotes.",
     )
 
     # Save posts to the database using SQLAlchemy ORM
