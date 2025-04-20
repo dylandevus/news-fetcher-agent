@@ -23,21 +23,12 @@ News Fetcher Agent using:
 #### Install:
 
 ```
-$ uv venv
 $ uv sync
-$ python3 -m src.main
 
 $ ./run.py format
 $ ./run.py check
 $ ./run.py pyright
 $ ./run.py mypy
-
-OR:
-$ python3 -m venv .venv
-$ source .venv/bin/activate
-$ pip3 install -r requirements.txt
-$ cd src
-$ python3 -m src.main    (run as module to avoid relative import issues)
 ```
 
 To debug - use: enable_verbose_stdout_logging()
@@ -53,10 +44,10 @@ $ open htmlcov/index.html
 
 #### Webapp - Backend
 
-Backend:
+##### Backend:
 - ./src/apis
 
-Scripts:uv 
+Scripts: uv 
 
 ```
 Install  $ uv add "fastapi[standard]" alembic graphene graphql-core httptools mako python-dateutil six sqlalchemy uvloop watchfiles websockets strawberry-graphql pydantic uvicorn
@@ -73,7 +64,15 @@ query {
 }
 ```
 
-Database:
+##### Fetch posts
+
+`$ python3 -m src.main    (run as module to avoid relative import issues)`
+
+##### Fetch Reddit comments
+
+`python3 scripts/fetch_comments.py`
+
+##### Database:
 
 ```
 Make a change         $ alembic revision --autogenerate -m "Description of your change"
