@@ -30,10 +30,16 @@ class PostType:
 @strawberry.type
 class Query:
     @strawberry.field
-    def posts(self, info) -> List[PostType]:
-        """Get all posts from the database"""
+    def posts(self, info, limit: Optional[int] = None) -> List[PostType]:
+        """Get all posts from the database, with optional limit parameter"""
         db = next(get_db())
-        db_posts = db.query(models.Posts).all()
+        query = db.query(models.Posts)
+        
+        # Apply limit if provided
+        if limit is not None:
+            query = query.limit(limit)
+            
+        db_posts = query.all()
 
         # Convert database model to GraphQL type
         result = []
