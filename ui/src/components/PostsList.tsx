@@ -6,7 +6,7 @@ import useKeyNav from "../utils/useKeyNav";
 
 const GET_POSTS = gql`
   query GetPosts {
-    posts {
+    posts(limit: 150) {
       id
       source
       sub

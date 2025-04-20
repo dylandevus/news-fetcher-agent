@@ -85,13 +85,13 @@ async def fetch_and_update_comments():
     """Fetch recent posts and update their comments."""
     db = SessionLocal()
     try:
-        # Get 20 most recent posts that either:
+        # Get N most recent posts that either:
         # 1. Don't have comment_html, or
         # 2. Have empty comment_html
         posts = db.query(Posts)\
             .filter((Posts.comment_html.is_(None)) | (Posts.comment_html == ''))\
             .order_by(Posts.created_at.desc())\
-            .limit(20)\
+            .limit(40)\
             .all()
         
         print(f"Found {len(posts)} posts without comments. Starting scraping...")

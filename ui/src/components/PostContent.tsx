@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 interface PostContentProps {
   post: {
@@ -16,6 +16,16 @@ interface PostContentProps {
 }
 
 const PostContent: React.FC<PostContentProps> = ({ post }) => {
+  // Create ref for the scrollable content area
+  const contentRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll content area to top when post changes
+  useEffect(() => {
+    if (contentRef.current && post) {
+      contentRef.current.scrollTop = 0;
+    }
+  }, [post?.id]);
+  
   if (!post) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-10rem)] p-6 text-gray-400 bg-gray-50">
@@ -32,11 +42,18 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
   const commentsUrl = post.commentUrl || (post.source === 'REDDIT' ? `https://www.reddit.com/r/${post.sub}/comments/${post.id}` : '')
 
   return (
-    <div className="p-8 h-[calc(100vh-10rem)] overflow-y-auto">
+    <div ref={contentRef} className="p-8 h-[calc(100vh-10rem)] overflow-y-auto">
       <span className="text-3xl font-bold text-gray-900" 
           dangerouslySetInnerHTML={{ __html: post.title }}></span>
       
       <div className="mt-2 flex items-center text-gray-400 text-sm gap-4">
+        {post.source && (
+          <span className="text-gray-400">
+            {post.source}
+            {post.sub && ` / ${post.sub}`}
+          </span>
+        )}
+        
         {post.publishedDate && (
           <span>{post.publishedDate}</span>
         )}
@@ -48,6 +65,20 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
             </svg>
             {post.upvotes.toLocaleString()}
           </span>
+        )}
+        
+        {post.url && post.url.includes('reddit.com/r/') === false && (
+          <a 
+            href={post.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:text-blue-500 transition-colors flex items-center"
+          >
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+            External Link
+          </a>
         )}
         
         {commentsUrl && (
@@ -69,7 +100,7 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
         <div 
           // className="text-gray-700 leading-relaxed whitespace-pre-line"
           dangerouslySetInnerHTML={{ 
-            __html: (post?.commentHtml ? post?.commentHtml : post?.text)
+            __html: (post?.commentHtml ? (post?.commentHtml || '') : (post?.text || ''))
               .replace(/&quot;/g, '"')
               // .replace(/\n/g, '<br />')
               .replace(/\r/g, '')

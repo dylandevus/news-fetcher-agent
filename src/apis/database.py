@@ -4,6 +4,9 @@ from sqlalchemy.orm import sessionmaker
 import os
 from urllib.parse import quote_plus
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # Get Supabase credentials from environment variables for security
 # Default to SQLite if environment variables are not set
 SUPABASE_PASSWORD = os.environ.get("SUPABASE_PASSWORD")

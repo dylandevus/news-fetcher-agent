@@ -1,0 +1,19 @@
+name: fetch_reddit_top_posts
+description: Fetches the top Reddit posts from a subreddit for the past week.
+url_template: "https://www.reddit.com/r/{subreddit}/top/.json?t=week"
+headers:
+  User-Agent: "news-fetcher-agent"
+parameters:
+  sub: "cybersecurity"
+  limit: 10
+response_mapping:
+  - source: "REDDIT"
+  - sub: "{sub}"
+  - id: "post['id']"
+  - title: "post['title']"
+  - text: "post['selftext']"
+  - author: "post['author']"
+  - upvotes: "post['ups']"
+  - url: "post['url']"
+  - comment_url: "https://www.reddit.com{post['permalink']}"
+  - published_date: "datetime.fromtimestamp(post['created_utc']).strftime('%Y-%m-%d %H:%M:%S')"
