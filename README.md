@@ -25,7 +25,7 @@ News Fetcher Agent using:
 ```
 $ uv venv
 $ uv sync
-$ python3 src/main.py
+$ python3 -m src.main
 
 $ ./run.py format
 $ ./run.py check
@@ -56,7 +56,7 @@ $ open htmlcov/index.html
 Backend:
 - ./src/apis
 
-Scripts:
+Scripts:uv 
 
 ```
 Install  $ uv add "fastapi[standard]" alembic graphene graphql-core httptools mako python-dateutil six sqlalchemy uvloop watchfiles websockets strawberry-graphql pydantic uvicorn

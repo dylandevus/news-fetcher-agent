@@ -23,6 +23,7 @@ class Posts(Base):
     url = Column(String, nullable=True)
     published_date = Column(String, nullable=True)
     comment_url = Column(String, nullable=True)
+    comment_html = Column(String, nullable=True)
     source = Column(SQLAlchemyEnum(SourceEnum), nullable=True)
     sub = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)

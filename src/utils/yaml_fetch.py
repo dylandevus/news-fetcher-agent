@@ -36,6 +36,13 @@ def fetch_from_yaml(config_path: str, **kwargs) -> List[Dict[str, Any]]:
     ]:
         mapped_item = {}
         post = item["data"]  # type: ignore # noqa: F841
+        
+        # Debug: Print permalink to verify it exists
+        if 'permalink' in post:
+            print(f"Found permalink: {post['permalink']}")
+        else:
+            print(f"WARNING: No permalink found in post with ID {post.get('id', 'unknown')}")
+            
         for mapping in config["response_mapping"]:
             # print("Processing mapping:", mapping)  # Debug: Print the entire mapping
             # Each `mapping` is a dictionary with a single key-value pair
@@ -47,8 +54,12 @@ def fetch_from_yaml(config_path: str, **kwargs) -> List[Dict[str, Any]]:
                         mapped_item[key] = eval(value)
                     else:
                         mapped_item[key] = eval(value.format(**kwargs))
-                except Exception:
-                    # print(f"Error processing key '{key}' with value '{value}': {e}")
+                        
+                    # Debug: Print when comment_url is processed
+                    if key == 'comment_url':
+                        print(f"Set comment_url to: {mapped_item[key]}")
+                except Exception as e:
+                    print(f"Error processing key '{key}' with value '{value}': {e}")
                     mapped_item[key] = None  # Set to None if an error occurs
 
             # print("- mapped_item so far:", mapped_item)  # Debug: Print the partially mapped item

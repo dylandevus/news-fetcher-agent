@@ -23,3 +23,4 @@ class Post(BaseModel):
     url: Optional[str]
     published_date: Optional[str]
     comment_url: Optional[str]  # Add the Hacker News comment URL
+    comment_html: Optional[str]

@@ -24,6 +24,7 @@ class PostType:
     url: Optional[str]
     published_date: Optional[str]
     comment_url: Optional[str]
+    comment_html: Optional[str]
 
 
 @strawberry.type
@@ -47,6 +48,7 @@ class Query:
                     url=post.url,
                     published_date=post.published_date,
                     comment_url=post.comment_url,
+                    comment_html=post.comment_html,
                     source=post.source.value if post.source else None,
                     sub=post.sub,
                 )
@@ -70,6 +72,7 @@ class Query:
             url=posts.url,
             published_date=posts.published_date,
             comment_url=posts.comment_url,
+            comment_html=posts.comment_html,
             source=posts.source.value if posts.source else None,
             sub=posts.sub,
         )

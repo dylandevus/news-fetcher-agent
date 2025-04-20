@@ -8,7 +8,7 @@ interface SubSelectorProps {
 const SUB_OPTIONS = [
   { label: 'React.js', value: 'reactjs' },
   { label: 'Python', value: 'Python' },
-  { label: 'AI', value: 'ArtificialInteligence' },
+  { label: 'ArtificialInteligence', value: 'ArtificialInteligence' },
   { label: 'ChatGPT Pro', value: 'ChatGPTPro' },
   { label: 'Local LLaMA', value: 'LocalLLaMA' },
 ];
@@ -29,7 +29,7 @@ const SubSelector: React.FC<SubSelectorProps> = ({ onSubsChange, selectedSources
       setSelectedSubs([]);
       onSubsChange([]);
     }
-  }, [selectedSources, onSubsChange]);
+  }, [selectedSources]);
 
   // Handle click outside to close dropdown
   useEffect(() => {

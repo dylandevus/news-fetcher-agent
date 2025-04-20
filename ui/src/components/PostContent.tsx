@@ -10,6 +10,7 @@ interface PostContentProps {
     publishedDate?: string;
     upvotes?: number;
     commentUrl?: string;
+    commentHtml?: string;
     url?: string;
   } | null;
 }
@@ -66,12 +67,13 @@ const PostContent: React.FC<PostContentProps> = ({ post }) => {
       
       <div className="prose prose-lg max-w-none mt-6">
         <div 
-          className="text-gray-700 leading-relaxed whitespace-pre-line"
+          // className="text-gray-700 leading-relaxed whitespace-pre-line"
           dangerouslySetInnerHTML={{ 
-            __html: (post?.text ?? '')
+            __html: (post?.commentHtml ? post?.commentHtml : post?.text)
               .replace(/&quot;/g, '"')
-              .replace(/\n/g, '<br />')
+              // .replace(/\n/g, '<br />')
               .replace(/\r/g, '')
+              .replace(/\n\n/g, '\n')
           }}
         ></div>
       </div>

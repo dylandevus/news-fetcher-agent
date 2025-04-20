@@ -17,8 +17,10 @@ from src.apis.database import SQLALCHEMY_DATABASE_URL
 # this is the Alembic Config object
 config = context.config
 
-# Setup the SQLAlchemy URL
-config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
+# Setup the SQLAlchemy URL - use raw strings to avoid interpolation issues
+# ConfigParser treats % as interpolation syntax, so we need to escape it
+url = SQLALCHEMY_DATABASE_URL.replace('%', '%%')
+config.set_main_option("sqlalchemy.url", url)
 
 # Interpret the config file for Python logging
 fileConfig(config.config_file_name)

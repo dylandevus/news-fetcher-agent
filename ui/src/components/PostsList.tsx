@@ -16,12 +16,13 @@ const GET_POSTS = gql`
       publishedDate
       url
       commentUrl
+      commentHtml
     }
   }
 `;
 
 const PostsList: React.FC<{ 
-  onPostClick: (post: { id: string; title: string; text: string; publishedDate?: string; url?: string; source?: string; sub?: string; commentUrl?: string }) => void;
+  onPostClick: (post: { id: string; title: string; text: string; publishedDate?: string; url?: string; source?: string; sub?: string; commentUrl?: string, commentHtml?: string }) => void;
   selectedSources: string[];
   selectedSubs: string[];
 }> = ({ onPostClick, selectedSources, selectedSubs }) => {
@@ -66,7 +67,8 @@ const PostsList: React.FC<{
         url: post.url,
         source: post.source,
         sub: post.sub,
-        commentUrl: post.commentUrl
+        commentUrl: post.commentUrl,
+        commentHtml: post.commentHtml
       });
     }
   };
@@ -95,7 +97,7 @@ const PostsList: React.FC<{
 
   return (
     <div ref={containerRef} tabIndex={0}>
-      {filteredPosts.map((item: { id: string; source: string; sub: string; title: string; text: string; publishedDate?: string; url?: string; commentUrl?: string }, index: number) => (
+      {filteredPosts.map((item: { id: string; source: string; sub: string; title: string; text: string; publishedDate?: string; url?: string; commentUrl?: string, commentHtml?: string }, index: number) => (
         <div key={index} data-index={index}>
           <PostListItem
             post={item}
