@@ -3,6 +3,7 @@ import PostsList from "../components/PostsList";
 import PostContent from "../components/PostContent";
 import Header from "../components/Header";
 import SourceSelector from "../components/SourceSelector";
+import SubSelector from "../components/SubSelector";
 
 const PostsPage: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<{
@@ -11,6 +12,7 @@ const PostsPage: React.FC = () => {
     published_date?: string;
   } | null>(null);
   const [selectedSources, setSelectedSources] = useState<string[]>([]);
+  const [selectedSubs, setSelectedSubs] = useState<string[]>([]);
 
   const handlePostClick = (post: { title: string; text: string; published_date?: string }) => {
     setSelectedPost(post);
@@ -18,7 +20,14 @@ const PostsPage: React.FC = () => {
   
   const handleSourcesChange = (sources: string[]) => {
     setSelectedSources(sources);
-    // Filtering is handled by passing sources to PostsList
+    // If Reddit is not selected, clear subreddit selections
+    if (!sources.includes('Reddit')) {
+      setSelectedSubs([]);
+    }
+  };
+
+  const handleSubsChange = (subs: string[]) => {
+    setSelectedSubs(subs);
   };
 
   return (
@@ -30,15 +39,22 @@ const PostsPage: React.FC = () => {
         {/* Left Column: Posts List */}
         <div className="w-1/3 bg-white border-r border-gray-200 overflow-hidden">
           <div className="p-4 border-b border-gray-200 bg-gray-50 sticky top-0 z-10 flex justify-between items-center">
+            <div className="flex space-x-3">
+              <SourceSelector onSourcesChange={handleSourcesChange} />
+              <SubSelector onSubsChange={handleSubsChange} selectedSources={selectedSources} />
+            </div>
             <h2 className="text-lg font-medium text-gray-800">
               {selectedSources.length > 0 
                 ? selectedSources.join(', ') 
                 : 'All'}
             </h2>
-            <SourceSelector onSourcesChange={handleSourcesChange} />
           </div>
           <div className="divide-y divide-gray-100 h-[calc(100vh-10rem)] overflow-y-auto">
-            <PostsList onPostClick={handlePostClick} selectedSources={selectedSources} />
+            <PostsList 
+              onPostClick={handlePostClick} 
+              selectedSources={selectedSources}
+              selectedSubs={selectedSubs} 
+            />
           </div>
         </div>
 

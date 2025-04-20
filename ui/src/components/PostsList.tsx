@@ -23,7 +23,8 @@ const GET_POSTS = gql`
 const PostsList: React.FC<{ 
   onPostClick: (post: { id: string; title: string; text: string; publishedDate?: string; url?: string; source?: string; sub?: string; commentUrl?: string }) => void;
   selectedSources: string[];
-}> = ({ onPostClick, selectedSources }) => {
+  selectedSubs: string[];
+}> = ({ onPostClick, selectedSources, selectedSubs }) => {
   const { loading, error, data } = useQuery(GET_POSTS);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -34,10 +35,21 @@ const PostsList: React.FC<{
     return new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime();
   }) : [];
 
-  // Filter posts by selected sources if any are selected
-  const filteredPosts = selectedSources.length > 0 && sortedPosts.length > 0
-    ? sortedPosts.filter(post => selectedSources.includes(post.source))
-    : sortedPosts;
+  // Filter posts by selected sources and subs if any are selected
+  let filteredPosts = sortedPosts;
+  
+  // Filter by sources if any sources are selected
+  if (selectedSources.length > 0 && sortedPosts.length > 0) {
+    filteredPosts = filteredPosts.filter(post => selectedSources.includes(post.source));
+  }
+  
+  // Filter by subreddits if any subs are selected
+  if (selectedSubs.length > 0 && filteredPosts.length > 0) {
+    filteredPosts = filteredPosts.filter(post => 
+      // Only apply sub filtering for Reddit posts
+      post.source !== 'REDDIT' || selectedSubs.includes(post.sub)
+    );
+  }
 
   // Use the keyboard navigation hook
   const handlePostSelect = (post: any, isOpeningLink?: boolean) => {
