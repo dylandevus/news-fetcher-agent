@@ -15,7 +15,7 @@ News Fetcher Agent using:
 
 #### Require:
 
-*   `uv venv --python 3.13`
+*   `uv venv --python 3.13.2`
 *   `uv init`
 *   `source .venv/bin/activate`
 *   `pre-commit install`
