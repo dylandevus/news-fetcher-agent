@@ -99,9 +99,22 @@ async def run_loop(interval_minutes):
                     await asyncio.sleep(interval_seconds)
         
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{current_time}] Fetch cycle completed. Now running fetch_comments.py to update post comments...")
+        
+        # Import and run the fetch_comments.py script
+        try:
+            from scripts.fetch_comments import fetch_and_update_comments
+            await fetch_and_update_comments()
+            current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print(f"[{current_time}] Comment fetching completed.")
+        except Exception as e:
+            current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print(f"[{current_time}] Error running fetch_comments.py: {str(e)}")
+        
+        # Continue with the next cycle after waiting
         next_cycle = datetime.datetime.now() + datetime.timedelta(seconds=interval_seconds)
         next_cycle_str = next_cycle.strftime("%Y-%m-%d %H:%M:%S")
-        print(f"[{current_time}] Fetch cycle completed. Next cycle at {next_cycle_str}")
+        print(f"[{current_time}] Next news fetch cycle at {next_cycle_str}")
         await asyncio.sleep(interval_seconds)
 
 async def run():
