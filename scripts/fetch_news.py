@@ -17,7 +17,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.main import main as main_func
 
 # define an array to hold the fetch arguments
-fetch_args = ["Hacker News", "Reddit sub [reactjs]", "Reddit sub [Python]", "Reddit sub [ArtificialInteligence]", "Reddit sub [ChatGPTPro]", "Reddit sub [LocalLLaMA]", "Reddit sub [cybersecurity]", "Reddit sub [netsec]"]
+fetch_args = ["Hacker News", "Reddit sub [reactjs]", "Reddit sub [Python]", "Reddit sub [ArtificialInteligence]",
+              "Reddit sub [ChatGPTPro]", "Reddit sub [LocalLLaMA]", "Reddit sub [cybersecurity]",
+              "Reddit sub [netsec]", "Reddit sub [softwarearchitecture]"]
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Fetch top posts from Hacker News or Reddit")
@@ -74,48 +76,48 @@ async def run_once(source):
 async def run_loop(interval_minutes):
     interval_seconds = interval_minutes * 60
     
-    while True:
-        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(f"[{current_time}] Starting fetch cycle")
-        
-        # Process each source one by one with delay between them
-        for idx, source in enumerate(fetch_args):
-            try:
-                # Process current source
-                await fetch_from_source(source)
-                
-                # If this isn't the last source, wait for the interval before next source
-                if idx < len(fetch_args) - 1:
-                    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    next_run = datetime.datetime.now() + datetime.timedelta(seconds=interval_seconds)
-                    next_run_str = next_run.strftime("%Y-%m-%d %H:%M:%S")
-                    print(f"[{current_time}] Waiting {interval_minutes} minutes before fetching next source. Next fetch at: {next_run_str}")
-                    await asyncio.sleep(interval_seconds)
-            except Exception as e:
-                current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                print(f"[{current_time}] Error fetching from {source}: {str(e)}")
-                # Still wait before next source even if there's an error
-                if idx < len(fetch_args) - 1:
-                    await asyncio.sleep(interval_seconds)
-        
-        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(f"[{current_time}] Fetch cycle completed. Now running fetch_comments.py to update post comments...")
-        
-        # Import and run the fetch_comments.py script
+    # while True:
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{current_time}] Starting fetch cycle")
+    
+    # Process each source one by one with delay between them
+    for idx, source in enumerate(fetch_args):
         try:
-            from scripts.fetch_comments import fetch_and_update_comments
-            await fetch_and_update_comments()
-            current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"[{current_time}] Comment fetching completed.")
+            # Process current source
+            await fetch_from_source(source)
+            
+            # If this isn't the last source, wait for the interval before next source
+            if idx < len(fetch_args) - 1:
+                current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                next_run = datetime.datetime.now() + datetime.timedelta(seconds=interval_seconds)
+                next_run_str = next_run.strftime("%Y-%m-%d %H:%M:%S")
+                print(f"[{current_time}] Waiting {interval_minutes} minutes before fetching next source. Next fetch at: {next_run_str}")
+                await asyncio.sleep(interval_seconds)
         except Exception as e:
             current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"[{current_time}] Error running fetch_comments.py: {str(e)}")
+            print(f"[{current_time}] Error fetching from {source}: {str(e)}")
+            # Still wait before next source even if there's an error
+            if idx < len(fetch_args) - 1:
+                await asyncio.sleep(interval_seconds)
+    
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{current_time}] Fetch cycle completed. Now running fetch_comments.py to update post comments...")
+    
+    # Import and run the fetch_comments.py script
+    try:
+        from scripts.fetch_comments import fetch_and_update_comments
+        await fetch_and_update_comments()
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{current_time}] Comment fetching completed.")
+    except Exception as e:
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{current_time}] Error running fetch_comments.py: {str(e)}")
         
-        # Continue with the next cycle after waiting
-        next_cycle = datetime.datetime.now() + datetime.timedelta(seconds=interval_seconds)
-        next_cycle_str = next_cycle.strftime("%Y-%m-%d %H:%M:%S")
-        print(f"[{current_time}] Next news fetch cycle at {next_cycle_str}")
-        await asyncio.sleep(interval_seconds)
+    # Continue with the next cycle after waiting
+    # next_cycle = datetime.datetime.now() + datetime.timedelta(seconds=interval_seconds)
+    # next_cycle_str = next_cycle.strftime("%Y-%m-%d %H:%M:%S")
+    # print(f"[{current_time}] Next news fetch cycle at {next_cycle_str}")
+    # await asyncio.sleep(interval_seconds)
 
 async def run():
     args = parse_args()

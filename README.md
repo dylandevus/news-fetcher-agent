@@ -66,7 +66,13 @@ query {
 
 ##### Fetch posts
 
-`$ python3 -m src.main    (run as module to avoid relative import issues)`
+```
+LOOP - fetch all sources, then fetch comments for recent posts:
+$ python3 scripts/fetch_news.py --loop --interval 1
+
+OR: fetch 1 source:
+$ python3 -m src.main    (run as module to avoid relative import issues)
+```
 
 ##### Fetch Reddit comments
 
