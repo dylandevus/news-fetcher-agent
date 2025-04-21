@@ -91,7 +91,7 @@ async def fetch_and_update_comments():
         posts = db.query(Posts)\
             .filter((Posts.comment_html.is_(None)) | (Posts.comment_html == ''))\
             .order_by(Posts.created_at.desc())\
-            .limit(40)\
+            .limit(100)\
             .all()
         
         print(f"Found {len(posts)} posts without comments. Starting scraping...")

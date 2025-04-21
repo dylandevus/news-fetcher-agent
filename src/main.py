@@ -1,3 +1,4 @@
+
 import asyncio
 import json
 from crawl4ai import AsyncWebCrawler  # type: ignore
@@ -34,7 +35,7 @@ agent = Agent(
 )
 
 
-async def main():
+async def main(source=None):
     # Ensure database schema has the comment_html column
     ensure_comment_html_column_exists()
     
@@ -42,10 +43,16 @@ async def main():
 
     # sources: Hacker News, Reddit
     # Reddit sub: reactjs, Python, ArtificialInteligence, ChatGPTPro, LocalLLaMA, cybersecurity, netsec
+    # Default value if not specified via parameter
+    fetch_arg = source if source is not None else "Hacker News"
+    
+    # Print a debug message to confirm which source is being used
+    print(f"Running main() with source: {fetch_arg}")
+
     result = await Runner.run(
         agent,
-        input="""
-            Fetch the top 20 Hacker News posts.
+        input=f"""
+            Fetch the top 20 {fetch_arg} posts.
             Also show title, link, link to comments, published date, author, upvotes.
         """,
     )

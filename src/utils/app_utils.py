@@ -221,10 +221,10 @@ def save_posts_to_database(posts: List[Post]):
         print(f"Successfully saved {len(posts)} posts to the database")
         
         # Asynchronously scrape comments for new posts in the background
-        if new_post_ids:
-            # Start the scraping process in the background without waiting for it
-            asyncio.create_task(_scrape_comments_for_posts(new_post_ids))
-            print(f"Started background comment scraping for {len(new_post_ids)} new posts")
+        # if new_post_ids:
+        #     # Start the scraping process in the background without waiting for it
+        #     asyncio.create_task(_scrape_comments_for_posts(new_post_ids))
+        #     print(f"Started background comment scraping for {len(new_post_ids)} new posts")
             
     except Exception as e:
         db.rollback()
