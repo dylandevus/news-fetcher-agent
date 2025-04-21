@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 
 interface SourceSelectorProps {
   onSourcesChange: (sources: string[]) => void;
+  initialSelected?: string[]; // New prop to receive initial selection
 }
 
-const SourceSelector: React.FC<SourceSelectorProps> = ({ onSourcesChange }) => {
+const SourceSelector: React.FC<SourceSelectorProps> = ({ onSourcesChange, initialSelected = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedSources, setSelectedSources] = useState<string[]>([]);
+  const [selectedSources, setSelectedSources] = useState<string[]>(initialSelected);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   const sources = [

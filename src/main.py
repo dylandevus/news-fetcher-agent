@@ -41,11 +41,11 @@ async def main():
     # await crawl_page("https://www.nbcnews.com/business")
 
     # sources: Hacker News, Reddit
-    # subs: reactjs, Python, ArtificialInteligence, ChatGPTPro, LocalLLaMA, cybersecurity, netsec
+    # Reddit sub: reactjs, Python, ArtificialInteligence, ChatGPTPro, LocalLLaMA, cybersecurity, netsec
     result = await Runner.run(
         agent,
         input="""
-            Fetch the top 20 Reddit sub 'netsec' posts.
+            Fetch the top 20 Hacker News posts.
             Also show title, link, link to comments, published date, author, upvotes.
         """,
     )

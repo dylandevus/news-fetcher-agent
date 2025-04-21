@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 interface SubSelectorProps {
   onSubsChange: (subs: string[]) => void;
   selectedSources: string[];
+  initialSelected?: string[]; // New prop to receive initial selection
 }
 
 const SUB_OPTIONS = [
@@ -13,8 +14,8 @@ const SUB_OPTIONS = [
   { label: 'Local LLaMA', value: 'LocalLLaMA' },
 ];
 
-const SubSelector: React.FC<SubSelectorProps> = ({ onSubsChange, selectedSources }) => {
-  const [selectedSubs, setSelectedSubs] = useState<string[]>([]);
+const SubSelector: React.FC<SubSelectorProps> = ({ onSubsChange, selectedSources, initialSelected = [] }) => {
+  const [selectedSubs, setSelectedSubs] = useState<string[]>(initialSelected);
   const [isOpen, setIsOpen] = useState(false);
   const [isRedditSelected, setIsRedditSelected] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
