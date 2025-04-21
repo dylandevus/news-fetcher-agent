@@ -23,6 +23,8 @@ def fetch_hackernews_top_posts(limit: int) -> List[Union[Post, dict]]:
     top_stories_url = "https://hacker-news.firebaseio.com/v0/topstories.json"
     item_url = "https://hacker-news.firebaseio.com/v0/item/{}.json"
     one_week_ago = datetime.now() - timedelta(days=7)
+    print('--- one_week_ago: ', one_week_ago)
+
     keywords = [
         "program",
         "ML",
@@ -57,7 +59,7 @@ def fetch_hackernews_top_posts(limit: int) -> List[Union[Post, dict]]:
             story_response = requests.get(item_url.format(story_id))
             story_response.raise_for_status()
             story_data = story_response.json()
-            # print("story_data", story_data)
+            print("- story_data", story_data.get("url", "No URL found"))
 
             # Filter posts published within the last 7 days
             published_date = datetime.fromtimestamp(story_data.get("time", 0))
@@ -81,12 +83,15 @@ def fetch_hackernews_top_posts(limit: int) -> List[Union[Post, dict]]:
                                 int(story_data.get("time"))
                             ).strftime("%Y-%m-%d %H:%M:%S"),
                             comment_url=f"https://news.ycombinator.com/item?id={story_id}",  # Generate comment URL
+                            comment_html="",  # Add empty comment_html field
                         )
                         posts.append(post)
                     except ValidationError as e:
                         posts.append({"error": str(e)})
                     except Exception as e:
                         posts.append({"error": str(e)})
+        
+        print("--- total posts: ", len(posts))
         return posts
     except requests.RequestException as e:
         print(e)
