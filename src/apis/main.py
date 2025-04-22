@@ -28,6 +28,12 @@ class PostType:
 
 
 @strawberry.type
+class DetailedPostResponse:
+    post: PostType
+    surroundingPosts: List[PostType]
+
+
+@strawberry.type
 class Query:
     @strawberry.field
     def posts(self, info, limit: Optional[int] = None) -> List[PostType]:
@@ -81,6 +87,61 @@ class Query:
             comment_html=posts.comment_html,
             source=posts.source.value if posts.source else None,
             sub=posts.sub,
+        )
+
+    @strawberry.field
+    def get_detailed_posts(self, info, id: str, surrounding_ids: List[str]) -> DetailedPostResponse:
+        """Get a specific post by id and fetch surrounding posts by their IDs"""
+        db = next(get_db())
+
+        # Fetch the main post
+        main_post = db.query(models.Posts).filter(models.Posts.post_id == id).first()
+        if not main_post:
+            raise ValueError("Post not found")
+        
+        print("id: ", id)
+        print("surrounding_ids: ", surrounding_ids)
+
+        # Fetch surrounding posts by their IDs
+        surrounding_posts = (
+            db.query(models.Posts)
+            .filter(models.Posts.post_id.in_(surrounding_ids))
+            .all()
+        )
+
+        # Convert posts to GraphQL types
+        surrounding_posts_data = [
+            PostType(
+                id=post.post_id,
+                title=post.title,
+                text=post.text,
+                author=post.author,
+                upvotes=post.upvotes,
+                url=post.url,
+                published_date=post.published_date,
+                comment_url=post.comment_url,
+                comment_html=post.comment_html,
+                source=post.source.value if post.source else None,
+                sub=post.sub,
+            )
+            for post in surrounding_posts
+        ]
+
+        return DetailedPostResponse(
+            post=PostType(
+                id=main_post.post_id,
+                title=main_post.title,
+                text=main_post.text,
+                author=main_post.author,
+                upvotes=main_post.upvotes,
+                url=main_post.url,
+                published_date=main_post.published_date,
+                comment_url=main_post.comment_url,
+                comment_html=main_post.comment_html,
+                source=main_post.source.value if main_post.source else None,
+                sub=main_post.sub,
+            ),
+            surroundingPosts=surrounding_posts_data,
         )
 
 
