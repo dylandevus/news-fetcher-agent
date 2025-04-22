@@ -22,6 +22,9 @@ const PostsPage: React.FC = () => {
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   
+  // Add state for the filter mode (All or Top)
+  const [filterMode, setFilterMode] = useState<'all' | 'top'>('all');
+  
   // Initialize selected sources from sessionStorage or default to empty array
   const [selectedSources, setSelectedSources] = useState<string[]>(() => {
     try {
@@ -84,6 +87,17 @@ const PostsPage: React.FC = () => {
     setSelectedSubs(subs);
   };
 
+  // Handler for switching between All and Top filters
+  const toggleFilterMode = (mode: 'all' | 'top') => {
+    setFilterMode(mode);
+    
+    // If switching to "All" mode, reset all filters
+    if (mode === 'all') {
+      setSelectedSources([]);
+      setSelectedSubs([]);
+    }
+  };
+
   return (
     <div className="flex flex-col w-full h-screen overflow-hidden">
       <Header />
@@ -104,17 +118,33 @@ const PostsPage: React.FC = () => {
                 initialSelected={selectedSubs} 
               />
             </div>
-            <h2 className="text-lg font-medium text-gray-800">
-              {selectedSources.length > 0 
-                ? selectedSources.join(', ') 
-                : 'All'}
-            </h2>
+            <div className="text-lg font-medium text-gray-800 flex items-center">
+              <span 
+                className={`cursor-pointer mr-2 ${filterMode === 'all' ? 'text-blue-600 font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
+                onClick={() => toggleFilterMode('all')}
+              >
+                All
+              </span>
+              <span className="text-gray-400">|</span>
+              <span 
+                className={`cursor-pointer ml-2 ${filterMode === 'top' ? 'text-blue-600 font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
+                onClick={() => toggleFilterMode('top')}
+              >
+                Top
+              </span>
+              {selectedSources.length > 0 && (
+                <span className="ml-3 text-sm text-gray-500">
+                  ({selectedSources.join(', ')})
+                </span>
+              )}
+            </div>
           </div>
           <div className="divide-y divide-gray-100 h-[calc(100vh-10rem)] overflow-y-auto">
             <PostsList 
               onPostClick={handlePostClick} 
               selectedSources={selectedSources}
-              selectedSubs={selectedSubs} 
+              selectedSubs={selectedSubs}
+              filterMode={filterMode}
             />
           </div>
         </div>

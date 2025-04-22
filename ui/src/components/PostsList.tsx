@@ -6,7 +6,7 @@ import useKeyNav from "../utils/useKeyNav";
 
 const GET_POSTS = gql`
   query GetPosts {
-    posts(limit: 150) {
+    posts(limit: 300) {
       id
       source
       sub
@@ -25,16 +25,56 @@ const PostsList: React.FC<{
   onPostClick: (post: { id: string; title: string; text: string; publishedDate?: string; url?: string; source?: string; sub?: string; commentUrl?: string, commentHtml?: string }) => void;
   selectedSources: string[];
   selectedSubs: string[];
-}> = ({ onPostClick, selectedSources, selectedSubs }) => {
+  filterMode?: 'all' | 'top'; // Add the new filterMode prop
+}> = ({ onPostClick, selectedSources, selectedSubs, filterMode = 'all' }) => {
   const { loading, error, data } = useQuery(GET_POSTS);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
-  // Sort posts by date, latest first
-  const sortedPosts = data?.posts ? [...data.posts].sort((a, b) => {
-    if (!a.publishedDate) return 1;
-    if (!b.publishedDate) return -1;
-    return new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime();
-  }) : [];
+  // Sort posts by date, latest first by default
+  const sortedPosts = React.useMemo(() => {
+    if (!data?.posts) return [];
+
+    const posts = [...data.posts];
+
+    // If filterMode is 'top', first identify posts from the last 2 days with upvotes
+    if (filterMode === 'top') {
+      const twoDaysAgo = new Date();
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+      
+      // Split posts into recent top posts and the rest
+      const recentPosts = posts.filter(post => {
+        return post.publishedDate && new Date(post.publishedDate) >= twoDaysAgo && post.upvotes && post.upvotes > 0;
+      });
+      
+      const otherPosts = posts.filter(post => {
+        return !post.publishedDate || new Date(post.publishedDate) < twoDaysAgo || !post.upvotes;
+      });
+      
+      // Sort recent posts by upvotes (highest first)
+      recentPosts.sort((a, b) => {
+        const aVotes = a.upvotes || 0;
+        const bVotes = b.upvotes || 0;
+        return bVotes - aVotes;
+      });
+      
+      // Sort other posts by date
+      otherPosts.sort((a, b) => {
+        if (!a.publishedDate) return 1;
+        if (!b.publishedDate) return -1;
+        return new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime();
+      });
+      
+      // Combine the two arrays: top posts first, then the rest
+      return [...recentPosts, ...otherPosts];
+    } else {
+      // Default sort by date for 'all' mode
+      return posts.sort((a, b) => {
+        if (!a.publishedDate) return 1;
+        if (!b.publishedDate) return -1;
+        return new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime();
+      });
+    }
+  }, [data?.posts, filterMode]);
 
   // Filter posts by selected sources and subs if any are selected
   let filteredPosts = sortedPosts;

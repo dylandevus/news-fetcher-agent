@@ -82,6 +82,7 @@ async def run_loop(interval_minutes):
     
     # Process each source one by one with delay between them
     for idx, source in enumerate(fetch_args):
+        print(f"--- Source: {idx} / {len(fetch_args)}")
         try:
             # Process current source
             await fetch_from_source(source)

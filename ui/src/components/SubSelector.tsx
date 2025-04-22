@@ -9,9 +9,12 @@ interface SubSelectorProps {
 const SUB_OPTIONS = [
   { label: 'React.js', value: 'reactjs' },
   { label: 'Python', value: 'Python' },
-  { label: 'ArtificialInteligence', value: 'ArtificialInteligence' },
+  { label: 'Artificial Intelligence', value: 'ArtificialInteligence' },
   { label: 'ChatGPT Pro', value: 'ChatGPTPro' },
   { label: 'Local LLaMA', value: 'LocalLLaMA' },
+  { label: 'Cybersecurity', value: 'cybersecurity' },
+  { label: 'NetSec', value: 'netsec' },
+  { label: 'Software Architecture', value: 'softwarearchitecture' },
 ];
 
 const SubSelector: React.FC<SubSelectorProps> = ({ onSubsChange, selectedSources, initialSelected = [] }) => {
