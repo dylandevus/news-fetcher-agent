@@ -16,6 +16,7 @@ class Post(BaseModel):
     source: Optional[SourceEnum]
     sub: Optional[str]
     id: Optional[str]  # Add the Hacker News post ID
+    post_id: Optional[str]
     title: Optional[str]
     text: Optional[str]  # HNews text
     author: Optional[str]

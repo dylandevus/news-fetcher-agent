@@ -1,14 +1,9 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, useApolloClient } from "@apollo/client";
 import "../App.css";
 import PostListItem from "./PostListItem";
 import useKeyNav from "../utils/useKeyNav";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-
-const client = new ApolloClient({
-  uri: "http://localhost:8000/graphql",
-  cache: new InMemoryCache(),
-});
+import { cachePost, getCachedPost, isPostCached, cachePosts } from "../utils/cacheUtils";
 
 const GET_POSTS = gql`
   query GetPosts {
@@ -133,6 +128,8 @@ const PostsList: React.FC<{
     }
   };
 
+  const client = useApolloClient();
+
   const { activeItemId: activePostId, handleItemClick } = useKeyNav({
     items: filteredPosts,
     containerRef: containerRef as React.RefObject<HTMLElement>,
@@ -143,10 +140,40 @@ const PostsList: React.FC<{
   });
 
   const fetchDetailedPost = async (postId: string, surroundingIds: string[]) => {
+    // Check our simple cache first
+    if (isPostCached(postId)) {
+      console.log('Using cached data for post:', postId);
+      const cachedPost = getCachedPost(postId);
+      
+      // Check for surrounding posts in our cache
+      const cachedSurroundingPosts = surroundingIds
+        .map(id => getCachedPost(id))
+        .filter(Boolean); // Filter out undefined posts
+      
+      console.log(`Found ${cachedSurroundingPosts.length} surrounding posts in cache`);
+      
+      return {
+        post: cachedPost,
+        surroundingPosts: cachedSurroundingPosts,
+      };
+    }
+    
+    // If not in cache, make the network request
+    console.log('Fetching from network for post:', postId);
     const { data } = await client.query({
       query: GET_DETAILED_POSTS,
       variables: { id: postId, surroundingIds },
     });
+    
+    // Store main post in our simple cache
+    if (data.getDetailedPosts.post) {
+      cachePost(data.getDetailedPosts.post);
+    }
+    
+    // Store surrounding posts in our simple cache
+    if (data.getDetailedPosts.surroundingPosts && data.getDetailedPosts.surroundingPosts.length) {
+      cachePosts(data.getDetailedPosts.surroundingPosts);
+    }
 
     return {
       post: data.getDetailedPosts.post,
