@@ -6,8 +6,8 @@ import useKeyNav from "../utils/useKeyNav";
 import { cachePost, getCachedPost, isPostCached, cachePosts } from "../utils/cacheUtils";
 
 const GET_POSTS = gql`
-  query GetPosts {
-    posts(limit: 300) {
+  query GetPosts($interweave: Boolean) {
+    posts(limit: 300, interweave: $interweave) {
       id
       source
       sub
@@ -57,7 +57,11 @@ const PostsList: React.FC<{
   selectedSubs: string[];
   filterMode?: 'all' | 'top';
 }> = ({ onPostClick, selectedSources, selectedSubs, filterMode = 'all' }) => {
-  const { loading, error, data } = useQuery(GET_POSTS);
+  const { loading, error, data } = useQuery(GET_POSTS, {
+    variables: {
+      interweave: true // Enable interwoven results by default
+    }
+  });
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   const sortedPosts = React.useMemo(() => {

@@ -36,36 +36,100 @@ class DetailedPostResponse:
 @strawberry.type
 class Query:
     @strawberry.field
-    def posts(self, info, limit: Optional[int] = None) -> List[PostType]:
-        """Get all posts from the database, with optional limit parameter"""
+    def posts(self, info, limit: Optional[int] = None, interweave: bool = False) -> List[PostType]:
+        """Get all posts from the database, with optional limit parameter
+        
+        If interweave=True, posts will be returned in an interwoven order from different sources/subs
+        based on their upvotes
+        """
         db = next(get_db())
         query = db.query(models.Posts)
-        
-        # Apply limit if provided
-        if limit is not None:
-            query = query.limit(limit)
-            
-        db_posts = query.all()
 
-        # Convert database model to GraphQL type
-        result = []
-        for post in db_posts:
-            result.append(
-                PostType(
-                    id=post.post_id,
-                    title=post.title,
-                    text=post.text,
-                    author=post.author,
-                    upvotes=post.upvotes,
-                    url=post.url,
-                    published_date=post.published_date,
-                    comment_url=post.comment_url,
-                    comment_html=post.comment_html,
-                    source=post.source.value if post.source else None,
-                    sub=post.sub,
+        # Get all distinct sources and subs
+        if interweave:
+            distinct_sources_query = db.query(models.Posts.source, models.Posts.sub).distinct().all()
+            distinct_sources = [(src.value if src else None, sub) for src, sub in distinct_sources_query]
+            
+            # Dictionary to store posts by source and sub
+            posts_by_category = {}
+            
+            # Create post buckets by source and sub
+            for source, sub in distinct_sources:
+                # Skip entries with None values
+                if source is None:
+                    continue
+                
+                category_key = f"{source}:{sub}" if sub else source
+                # Fetch the top posts for this category, ordered by upvotes
+                category_posts = db.query(models.Posts).filter(
+                    models.Posts.source == source if source else True,
+                    models.Posts.sub == sub if sub else True
+                ).order_by(
+                    models.Posts.upvotes.desc().nullslast()
+                ).all()
+                
+                if category_posts:
+                    posts_by_category[category_key] = category_posts
+            
+            # Interweave posts from different categories
+            result = []
+            max_posts_per_category = 0
+            if posts_by_category:
+                max_posts_per_category = max(len(posts) for posts in posts_by_category.values())
+            
+            # Round-robin through each category, taking the next highest voted post
+            for i in range(max_posts_per_category):
+                for category in posts_by_category:
+                    category_posts = posts_by_category[category]
+                    if i < len(category_posts):
+                        post = category_posts[i]
+                        result.append(
+                            PostType(
+                                id=post.post_id,
+                                title=post.title,
+                                text=post.text,
+                                author=post.author,
+                                upvotes=post.upvotes,
+                                url=post.url,
+                                published_date=post.published_date,
+                                comment_url=post.comment_url,
+                                comment_html=post.comment_html,
+                                source=post.source.value if post.source else None,
+                                sub=post.sub,
+                            )
+                        )
+            
+            # Apply limit if provided
+            if limit is not None and len(result) > limit:
+                result = result[:limit]
+                
+            return result
+        else:
+            # Original behavior
+            if limit is not None:
+                query = query.limit(limit)
+                
+            db_posts = query.all()
+    
+            # Convert database model to GraphQL type
+            result = []
+            for post in db_posts:
+                result.append(
+                    PostType(
+                        id=post.post_id,
+                        title=post.title,
+                        text=post.text,
+                        author=post.author,
+                        upvotes=post.upvotes,
+                        url=post.url,
+                        published_date=post.published_date,
+                        comment_url=post.comment_url,
+                        comment_html=post.comment_html,
+                        source=post.source.value if post.source else None,
+                        sub=post.sub,
+                    )
                 )
-            )
-        return result
+            return result
 
     @strawberry.field
     def post(self, info, id: int) -> Optional[PostType]:

@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.main import main as main_func
 
 # define an array to hold the fetch arguments
-fetch_args = ["Hacker News", "Reddit sub [reactjs]", "Reddit sub [Python]", "Reddit sub [ArtificialInteligence]",
+fetch_args = ["Hacker News", "Reddit sub [reactjs]", "Reddit sub [webdev]", "Reddit sub [Python]", "Reddit sub [ArtificialInteligence]",
               "Reddit sub [ChatGPTPro]", "Reddit sub [LocalLLaMA]", "Reddit sub [cybersecurity]",
               "Reddit sub [netsec]", "Reddit sub [softwarearchitecture]"]
 
